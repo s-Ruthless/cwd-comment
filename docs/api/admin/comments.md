@@ -11,13 +11,13 @@ Authorization: Bearer <token>
 ## 1.1 获取评论列表
 
 ```
-GET /admin/comments/list
+GET /api/admin/comments/list
 ```
 
 获取评论列表，用于后台管理页面展示。
 
 - 方法：`GET`
-- 路径：`/admin/comments/list`
+- 路径：`/api/admin/comments/list`
 - 鉴权：需要（Bearer Token）
 
 **`查询参数`**
@@ -97,15 +97,15 @@ GET /admin/comments/list
 ## 1.2 更新评论状态
 
 ```
-PUT /admin/comments/status
+PUT /api/admin/comments/status
 ```
 
 更新评论状态（例如通过 / 拒绝）。
 
-**注意**：此接口仅用于更新评论状态，如需修改评论内容、置顶权重等，请使用 `/admin/comments/update` 接口。
+**注意**：此接口仅用于更新评论状态，如需修改评论内容、置顶权重等，请使用 `/api/admin/comments/update` 接口。
 
 - 方法：`PUT`
-- 路径：`/admin/comments/status`
+- 路径：`/api/admin/comments/status`
 - 鉴权：需要（Bearer Token）
 
 **查询参数**
@@ -153,13 +153,13 @@ PUT /admin/comments/status
 ## 1.3 更新评论内容
 
 ```
-PUT /admin/comments/update
+PUT /api/admin/comments/update
 ```
 
 更新评论的详细信息，包括昵称、邮箱、网址、评论地址、内容、状态和置顶权重等。
 
 - 方法：`PUT`
-- 路径：`/admin/comments/update`
+- 路径：`/api/admin/comments/update`
 - 鉴权：需要（Bearer Token）
 
 **请求头**
@@ -255,13 +255,13 @@ PUT /admin/comments/update
 ## 1.4 删除指定评论
 
 ```
-DELETE /admin/comments/delete
+DELETE /api/admin/comments/delete
 ```
 
 删除指定评论。
 
 - 方法：`DELETE`
-- 路径：`/admin/comments/delete`
+- 路径：`/api/admin/comments/delete`
 - 鉴权：需要（Bearer Token）
 
 **查询参数**
@@ -303,13 +303,13 @@ DELETE /admin/comments/delete
 ## 1.5 将指定 IP 加入评论黑名单
 
 ```
-POST /admin/comments/block-ip
+POST /api/admin/comments/block-ip
 ```
 
 通过接口将指定 IP 地址加入评论黑名单，后续该 IP 提交评论将被拒绝。
 
 - 方法：`POST`
-- 路径：`/admin/comments/block-ip`
+- 路径：`/api/admin/comments/block-ip`
 - 鉴权：需要（Bearer Token）
 
 **请求头**
@@ -365,13 +365,13 @@ POST /admin/comments/block-ip
 ## 1.6 将指定邮箱加入评论黑名单
 
 ```
-POST /admin/comments/block-email
+POST /api/admin/comments/block-email
 ```
 
 通过接口将指定邮箱地址加入评论黑名单，后续该邮箱提交评论将被拒绝。
 
 - 方法：`POST`
-- 路径：`/admin/comments/block-email`
+- 路径：`/api/admin/comments/block-email`
 - 鉴权：需要（Bearer Token）
 
 **请求头**

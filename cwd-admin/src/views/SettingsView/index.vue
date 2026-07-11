@@ -1,3 +1,4 @@
+<!-- SettingsView v0.1.13 -->
 <template>
   <div class="page">
     <h2 class="page-title">{{ t("settings.title") }}</h2>
@@ -187,6 +188,21 @@
                   </div>
                 </div>
 
+                <div class="form-item bg">
+                  <div class="form-item-flex">
+                    <label class="form-label">{{
+                      t("settings.feature.emoji")
+                    }}</label>
+                    <label class="switch">
+                      <input v-model="enableEmoji" type="checkbox" />
+                      <span class="slider" />
+                    </label>
+                  </div>
+                  <div class="form-hint">
+                    {{ t("settings.feature.emojiHint") }}
+                  </div>
+                </div>
+
                 <div class="form-item">
                   <label class="form-label">{{
                     t("settings.feature.placeholder")
@@ -219,6 +235,21 @@
                   </select>
                   <div class="form-hint">
                     {{ t("settings.feature.widgetLanguageHint") }}
+                  </div>
+                </div>
+
+                <div class="form-item">
+                  <label class="form-label">{{
+                    t("settings.feature.emotionUrl")
+                  }}</label>
+                  <input
+                    v-model="emotionUrl"
+                    class="form-input"
+                    type="text"
+                    placeholder="https://cdn.example.com/emotion"
+                  />
+                  <div class="form-hint">
+                    {{ t("settings.feature.emotionUrlHint") }}
                   </div>
                 </div>
 
@@ -641,6 +672,7 @@ const requireReview = ref(false);
 const enableArticleLike = ref(true);
 const enableCommentLike = ref(true);
 const enableImageLightbox = ref(true);
+const enableEmoji = ref(true);
 const commentPlaceholder = ref("");
 const telegramBotToken = ref("");
 const telegramChatId = ref("");
@@ -670,6 +702,7 @@ const languageOptions = [
 const { t, locale } = useI18n();
 const adminLanguage = ref("zh-CN");
 const widgetLanguage = ref("auto");
+const emotionUrl = ref("");
 
 const route = useRoute();
 const router = useRouter();
@@ -828,9 +861,11 @@ async function load() {
     enableArticleLike.value = featureRes.enableArticleLike;
     enableCommentLike.value = featureRes.enableCommentLike;
     enableImageLightbox.value = featureRes.enableImageLightbox;
+    enableEmoji.value = featureRes.enableEmoji;
     commentPlaceholder.value = featureRes.commentPlaceholder || "";
     adminLanguage.value = featureRes.adminLanguage || "zh-CN";
     widgetLanguage.value = featureRes.widgetLanguage || "auto";
+    emotionUrl.value = featureRes.emotionUrl || "";
 
     // Sync locale
     if (featureRes.adminLanguage) {
@@ -984,8 +1019,10 @@ async function saveFeature() {
         enableArticleLike: enableArticleLike.value,
         enableCommentLike: enableCommentLike.value,
         enableImageLightbox: enableImageLightbox.value,
+        enableEmoji: enableEmoji.value,
         commentPlaceholder: commentPlaceholder.value,
         widgetLanguage: widgetLanguage.value,
+        emotionUrl: emotionUrl.value,
       }),
     ]);
 

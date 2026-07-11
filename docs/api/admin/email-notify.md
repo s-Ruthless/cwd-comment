@@ -2,7 +2,7 @@
 
 邮件通知配置接口用于获取和更新 SMTP 配置、邮件模板以及测试邮件发送功能。
 
-新评论的邮件通知会发送到「评论设置」(`/admin/settings/comments`) 中配置的管理员邮箱（`adminEmail`），无需在本接口中单独设置收件邮箱。
+新评论的邮件通知会发送到「评论设置」(`/api/admin/settings/comments`) 中配置的管理员邮箱（`adminEmail`），无需在本接口中单独设置收件邮箱。
 
 所有接口都需要在请求头中携带 Bearer Token。
 
@@ -13,13 +13,13 @@ Authorization: Bearer <token>
 ## 1.1 获取邮件通知配置
 
 ```
-GET /admin/settings/email-notify
+GET /api/admin/settings/email-notify
 ```
 
 获取邮件通知配置，包括 SMTP 配置和邮件模板。
 
 - 方法：`GET`
-- 路径：`/admin/settings/email-notify`
+- 路径：`/api/admin/settings/email-notify`
 - 鉴权：需要（Bearer Token）
 
 **成功响应**
@@ -92,13 +92,13 @@ GET /admin/settings/email-notify
 ## 1.2 更新邮件通知配置
 
 ```
-PUT /admin/settings/email-notify
+PUT /api/admin/settings/email-notify
 ```
 
 更新邮件通知配置，包括 SMTP 配置和邮件模板。
 
 - 方法：`PUT`
-- 路径：`/admin/settings/email-notify`
+- 路径：`/api/admin/settings/email-notify`
 - 鉴权：需要（Bearer Token）
 
 **请求头**
@@ -164,13 +164,13 @@ PUT /admin/settings/email-notify
 ## 1.3 测试邮件发送
 
 ```
-POST /admin/settings/email-test
+POST /api/admin/settings/email-test
 ```
 
 测试邮件通知配置是否正确，发送一封测试邮件到指定邮箱。
 
 - 方法：`POST`
-- 路径：`/admin/settings/email-test`
+- 路径：`/api/admin/settings/email-test`
 - 鉴权：需要（Bearer Token）
 
 **请求头**
@@ -243,16 +243,16 @@ POST /admin/settings/email-test
 ## 1.4 获取通知邮箱配置（已废弃）
 
 ```
-GET /admin/settings/email
+GET /api/admin/settings/email
 ```
 
 获取当前通知邮箱配置。
 
 > [!NOTE]
-> 此接口已被 `/admin/settings/email-notify` 替代，且管理员通知邮箱已统一由 `/admin/settings/comments` 中的 `adminEmail` 提供，不再推荐使用本接口。
+> 此接口已被 `/api/admin/settings/email-notify` 替代，且管理员通知邮箱已统一由 `/api/admin/settings/comments` 中的 `adminEmail` 提供，不再推荐使用本接口。
 
 - 方法：`GET`
-- 路径：`/admin/settings/email`
+- 路径：`/api/admin/settings/email`
 - 鉴权：需要（Bearer Token）
 
 **成功响应**
@@ -278,16 +278,16 @@ GET /admin/settings/email
 ## 1.5 设置通知邮箱（已废弃）
 
 ```
-PUT /admin/settings/email
+PUT /api/admin/settings/email
 ```
 
 设置通知邮箱，用于接收新评论提醒。
 
 > [!NOTE]
-> 此接口已被 `/admin/settings/email-notify` 替代，且通知收件邮箱已统一使用评论配置中的 `adminEmail`，不再推荐调用本接口。
+> 此接口已被 `/api/admin/settings/email-notify` 替代，且通知收件邮箱已统一使用评论配置中的 `adminEmail`，不再推荐调用本接口。
 
 - 方法：`PUT`
-- 路径：`/admin/settings/email`
+- 路径：`/api/admin/settings/email`
 - 鉴权：需要（Bearer Token）
 
 **请求头**

@@ -1,4 +1,4 @@
-import { get, post, put, del } from './http';
+import { get, post, put, del, getApiBaseUrl } from './http';
 
 export type AdminLoginResponse = {
 	data: {
@@ -135,10 +135,12 @@ export type FeatureSettingsResponse = {
 	enableCommentLike: boolean;
 	enableArticleLike: boolean;
 	enableImageLightbox: boolean;
+	enableEmoji: boolean;
 	commentPlaceholder?: string;
 	visibleDomains?: string[];
 	adminLanguage?: string;
 	widgetLanguage?: string;
+	emotionUrl?: string;
 };
 
 export type AdminDisplaySettingsResponse = {
@@ -146,7 +148,7 @@ export type AdminDisplaySettingsResponse = {
 };
 
 export async function loginAdmin(name: string, password: string): Promise<string> {
-	const res = await post<AdminLoginResponse>('/admin/login', { name, password });
+	const res = await post<AdminLoginResponse>('/api/admin/login', { name, password });
 	const key = res.data.key;
 	localStorage.setItem('cwd_admin_token', key);
 	return key;
@@ -162,15 +164,15 @@ export function fetchComments(page: number, siteId?: string): Promise<CommentLis
 	if (siteId && siteId !== 'default') {
 		searchParams.set('siteId', siteId);
 	}
-	return get<CommentListResponse>(`/admin/comments/list?${searchParams.toString()}`);
+	return get<CommentListResponse>(`/api/admin/comments/list?${searchParams.toString()}`);
 }
 
 export function deleteComment(id: number): Promise<{ message: string }> {
-	return del<{ message: string }>(`/admin/comments/delete?id=${id}`);
+	return del<{ message: string }>(`/api/admin/comments/delete?id=${id}`);
 }
 
 export function updateCommentStatus(id: number, status: string): Promise<{ message: string }> {
-	return put<{ message: string }>(`/admin/comments/status?id=${id}&status=${encodeURIComponent(status)}`);
+	return put<{ message: string }>(`/api/admin/comments/status?id=${id}&status=${encodeURIComponent(status)}`);
 }
 
 export function updateComment(data: {
@@ -184,7 +186,7 @@ export function updateComment(data: {
 	status?: string;
 	priority?: number;
 }): Promise<{ message: string }> {
-	return put<{ message: string }>('/admin/comments/update', {
+	return put<{ message: string }>('/api/admin/comments/update', {
 		id: data.id,
 		name: data.name,
 		email: data.email,
@@ -198,15 +200,15 @@ export function updateComment(data: {
 }
 
 export function fetchAdminEmail(): Promise<AdminEmailResponse> {
-	return get<AdminEmailResponse>('/admin/settings/email');
+	return get<AdminEmailResponse>('/api/admin/settings/email');
 }
 
 export function saveAdminEmail(email: string): Promise<{ message: string }> {
-	return put<{ message: string }>('/admin/settings/email', { email });
+	return put<{ message: string }>('/api/admin/settings/email', { email });
 }
 
 export function fetchEmailNotifySettings(): Promise<EmailNotifySettingsResponse> {
-	return get<EmailNotifySettingsResponse>('/admin/settings/email-notify');
+	return get<EmailNotifySettingsResponse>('/api/admin/settings/email-notify');
 }
 
 export function saveEmailNotifySettings(data: {
@@ -223,7 +225,7 @@ export function saveEmailNotifySettings(data: {
 		admin?: string;
 	};
 }): Promise<{ message: string }> {
-	return put<{ message: string }>('/admin/settings/email-notify', data);
+	return put<{ message: string }>('/api/admin/settings/email-notify', data);
 }
 
 export function sendTestEmail(data: {
@@ -236,11 +238,11 @@ export function sendTestEmail(data: {
 		secure?: boolean;
 	};
 }): Promise<{ message: string }> {
-	return post<{ message: string }>('/admin/settings/email-test', data);
+	return post<{ message: string }>('/api/admin/settings/email-test', data);
 }
 
 export function fetchCommentSettings(): Promise<CommentSettingsResponse> {
-	return get<CommentSettingsResponse>('/admin/settings/comments');
+	return get<CommentSettingsResponse>('/api/admin/settings/comments');
 }
 
 export function saveCommentSettings(data: {
@@ -254,31 +256,31 @@ export function saveCommentSettings(data: {
 	blockedIps?: string[];
 	blockedEmails?: string[];
 }): Promise<{ message: string }> {
-	return put<{ message: string }>('/admin/settings/comments', data);
+	return put<{ message: string }>('/api/admin/settings/comments', data);
 }
 
 export function blockIp(ip: string): Promise<{ message: string }> {
-	return post<{ message: string }>('/admin/comments/block-ip', { ip });
+	return post<{ message: string }>('/api/admin/comments/block-ip', { ip });
 }
 
 export function blockEmail(email: string): Promise<{ message: string }> {
-	return post<{ message: string }>('/admin/comments/block-email', { email });
+	return post<{ message: string }>('/api/admin/comments/block-email', { email });
 }
 
 export function exportComments(): Promise<any[]> {
-	return get<any[]>('/admin/comments/export');
+	return get<any[]>('/api/admin/comments/export');
 }
 
 export function importComments(data: any[]): Promise<{ message: string }> {
-	return post<{ message: string }>('/admin/comments/import', data);
+	return post<{ message: string }>('/api/admin/comments/import', data);
 }
 
 export function exportConfig(): Promise<any[]> {
-	return get<any[]>('/admin/export/config');
+	return get<any[]>('/api/admin/export/config');
 }
 
 export function importConfig(data: any[]): Promise<{ message: string }> {
-	return post<{ message: string }>('/admin/import/config', data);
+	return post<{ message: string }>('/api/admin/import/config', data);
 }
 
 export function exportStats(siteId?: string): Promise<any> {
@@ -287,19 +289,19 @@ export function exportStats(siteId?: string): Promise<any> {
 		searchParams.set('siteId', siteId);
 	}
 	const query = searchParams.toString();
-	return get<any>(query ? `/admin/export/stats?${query}` : '/admin/export/stats');
+	return get<any>(query ? `/api/admin/export/stats?${query}` : '/api/admin/export/stats');
 }
 
 export function importStats(data: any): Promise<{ message: string }> {
-	return post<{ message: string }>('/admin/import/stats', data);
+	return post<{ message: string }>('/api/admin/import/stats', data);
 }
 
 export function exportBackup(): Promise<any> {
-	return get<any>('/admin/export/backup');
+	return get<any>('/api/admin/export/backup');
 }
 
 export function importBackup(data: any): Promise<{ message: string }> {
-	return post<{ message: string }>('/admin/import/backup', data);
+	return post<{ message: string }>('/api/admin/import/backup', data);
 }
 
 export function fetchCommentStats(siteId?: string): Promise<CommentStatsResponse> {
@@ -308,7 +310,7 @@ export function fetchCommentStats(siteId?: string): Promise<CommentStatsResponse
 		searchParams.set('siteId', siteId);
 	}
 	const query = searchParams.toString();
-	const url = query ? `/admin/stats/comments?${query}` : '/admin/stats/comments';
+	const url = query ? `/api/admin/stats/comments?${query}` : '/api/admin/stats/comments';
 	return get<CommentStatsResponse>(url);
 }
 
@@ -318,7 +320,7 @@ export function fetchVisitOverview(siteId?: string): Promise<VisitOverviewRespon
 		searchParams.set('siteId', siteId);
 	}
 	const query = searchParams.toString();
-	const url = query ? `/admin/analytics/overview?${query}` : '/admin/analytics/overview';
+	const url = query ? `/api/admin/analytics/overview?${query}` : '/api/admin/analytics/overview';
 	return get<VisitOverviewResponse>(url);
 }
 
@@ -331,12 +333,12 @@ export function fetchVisitPages(siteId?: string, order?: 'pv' | 'latest'): Promi
 		searchParams.set('order', order);
 	}
 	const query = searchParams.toString();
-	const url = query ? `/admin/analytics/pages?${query}` : '/admin/analytics/pages';
+	const url = query ? `/api/admin/analytics/pages?${query}` : '/api/admin/analytics/pages';
 	return get<VisitPagesResponse>(url);
 }
 
 export function fetchSiteList(): Promise<SiteListResponse> {
-	return get<SiteListResponse>('/admin/stats/sites');
+	return get<SiteListResponse>('/api/admin/stats/sites');
 }
 
 export function fetchLikeStats(siteId?: string): Promise<LikeStatsResponse> {
@@ -345,26 +347,26 @@ export function fetchLikeStats(siteId?: string): Promise<LikeStatsResponse> {
 		searchParams.set('siteId', siteId);
 	}
 	const query = searchParams.toString();
-	const url = query ? `/admin/likes/stats?${query}` : '/admin/likes/stats';
+	const url = query ? `/api/admin/likes/stats?${query}` : '/api/admin/likes/stats';
 	return get<LikeStatsResponse>(url);
 }
 
 export function fetchFeatureSettings(): Promise<FeatureSettingsResponse> {
-	return get<FeatureSettingsResponse>('/admin/settings/features');
+	return get<FeatureSettingsResponse>('/api/admin/settings/features');
 }
 
-export function saveFeatureSettings(data: { enableCommentLike?: boolean; enableArticleLike?: boolean; enableImageLightbox?: boolean; commentPlaceholder?: string; visibleDomains?: string[]; adminLanguage?: string; widgetLanguage?: string }): Promise<{ message: string }> {
-	return put<{ message: string }>('/admin/settings/features', data);
+export function saveFeatureSettings(data: { enableCommentLike?: boolean; enableArticleLike?: boolean; enableImageLightbox?: boolean; enableEmoji?: boolean; commentPlaceholder?: string; visibleDomains?: string[]; adminLanguage?: string; widgetLanguage?: string; emotionUrl?: string }): Promise<{ message: string }> {
+	return put<{ message: string }>('/api/admin/settings/features', data);
 }
 
 export function fetchAdminDisplaySettings(): Promise<AdminDisplaySettingsResponse> {
-	return get<AdminDisplaySettingsResponse>('/admin/settings/admin-display');
+	return get<AdminDisplaySettingsResponse>('/api/admin/settings/admin-display');
 }
 
 export function saveAdminDisplaySettings(data: {
 	layoutTitle?: string;
 }): Promise<{ message: string }> {
-	return put<{ message: string }>('/admin/settings/admin-display', data);
+	return put<{ message: string }>('/api/admin/settings/admin-display', data);
 }
 
 export type TelegramSettingsResponse = {
@@ -374,19 +376,19 @@ export type TelegramSettingsResponse = {
 };
 
 export function fetchTelegramSettings(): Promise<TelegramSettingsResponse> {
-	return get<TelegramSettingsResponse>('/admin/settings/telegram');
+	return get<TelegramSettingsResponse>('/api/admin/settings/telegram');
 }
 
 export function saveTelegramSettings(data: { botToken?: string; chatId?: string; notifyEnabled?: boolean }): Promise<{ message: string }> {
-	return put<{ message: string }>('/admin/settings/telegram', data);
+	return put<{ message: string }>('/api/admin/settings/telegram', data);
 }
 
 export function setupTelegramWebhook(): Promise<{ message: string; webhookUrl: string }> {
-	return post<{ message: string; webhookUrl: string }>('/admin/settings/telegram/setup', {});
+	return post<{ message: string; webhookUrl: string }>('/api/admin/settings/telegram/setup', {});
 }
 
 export function sendTelegramTestMessage(): Promise<{ message: string }> {
-	return post<{ message: string }>('/admin/settings/telegram/test', {});
+	return post<{ message: string }>('/api/admin/settings/telegram/test', {});
 }
 
 export type S3SettingsResponse = {
@@ -398,15 +400,15 @@ export type S3SettingsResponse = {
 };
 
 export function fetchS3Settings(): Promise<S3SettingsResponse> {
-	return get<S3SettingsResponse>('/admin/settings/s3');
+	return get<S3SettingsResponse>('/api/admin/settings/s3');
 }
 
 export function saveS3Settings(data: S3SettingsResponse): Promise<{ message: string }> {
-	return put<{ message: string }>('/admin/settings/s3', data);
+	return put<{ message: string }>('/api/admin/settings/s3', data);
 }
 
 export function triggerS3Backup(): Promise<{ message: string; file: string }> {
-	return post<{ message: string; file: string }>('/admin/backup/s3', {});
+	return post<{ message: string; file: string }>('/api/admin/backup/s3', {});
 }
 
 export type S3BackupItem = {
@@ -416,17 +418,14 @@ export type S3BackupItem = {
 };
 
 export function fetchS3BackupList(): Promise<{ files: S3BackupItem[] }> {
-	return get<{ files: S3BackupItem[] }>('/admin/backup/s3/list');
+	return get<{ files: S3BackupItem[] }>('/api/admin/backup/s3/list');
 }
 
 export function deleteS3Backup(key: string): Promise<{ message: string }> {
-	return del<{ message: string }>(`/admin/backup/s3?key=${encodeURIComponent(key)}`);
+	return del<{ message: string }>(`/api/admin/backup/s3?key=${encodeURIComponent(key)}`);
 }
 
 export function downloadS3BackupUrl(key: string): string {
-	const rawEnvApiBaseUrl = (import.meta.env.VITE_API_BASE_URL || '').trim();
-	const stored = (localStorage.getItem('cwd_admin_api_base_url') || '').trim();
-	const source = stored || rawEnvApiBaseUrl;
-	const apiBaseUrl = source.replace(/\/+$/, '');
-	return `${apiBaseUrl}/admin/backup/s3/download?key=${encodeURIComponent(key)}`;
+	const apiBaseUrl = getApiBaseUrl();
+	return `${apiBaseUrl}/api/admin/backup/s3/download?key=${encodeURIComponent(key)}`;
 }

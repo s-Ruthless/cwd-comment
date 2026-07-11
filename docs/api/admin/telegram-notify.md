@@ -11,13 +11,13 @@ Authorization: Bearer <token>
 ## 1.1 获取 Telegram 配置
 
 ```
-GET /admin/settings/telegram
+GET /api/admin/settings/telegram
 ```
 
 获取当前的 Telegram 通知配置。
 
 - 方法：`GET`
-- 路径：`/admin/settings/telegram`
+- 路径：`/api/admin/settings/telegram`
 - 鉴权：需要（Bearer Token）
 
 **成功响应**
@@ -35,13 +35,13 @@ GET /admin/settings/telegram
 ## 1.2 更新 Telegram 配置
 
 ```
-PUT /admin/settings/telegram
+PUT /api/admin/settings/telegram
 ```
 
 更新 Telegram 通知配置。
 
 - 方法：`PUT`
-- 路径：`/admin/settings/telegram`
+- 路径：`/api/admin/settings/telegram`
 - 鉴权：需要（Bearer Token）
 
 **请求体**
@@ -57,13 +57,13 @@ PUT /admin/settings/telegram
 ## 1.3 一键设置 Webhook
 
 ```
-POST /admin/settings/telegram/setup
+POST /api/admin/settings/telegram/setup
 ```
 
 自动设置 Telegram Webhook URL。此接口会使用当前 Worker 的域名构建 Webhook URL 并调用 Telegram API。
 
 - 方法：`POST`
-- 路径：`/admin/settings/telegram/setup`
+- 路径：`/api/admin/settings/telegram/setup`
 - 鉴权：需要（Bearer Token）
 
 **成功响应**

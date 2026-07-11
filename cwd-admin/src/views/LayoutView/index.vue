@@ -187,7 +187,6 @@ import { useTheme } from "../../composables/useTheme";
 import { useSite } from "../../composables/useSite";
 import packageJson from "../../../package.json";
 
-const API_BASE_URL_KEY = "cwd_admin_api_base_url";
 const SITE_TITLE_KEY = "cwd_admin_site_title";
 
 const router = useRouter();
@@ -245,16 +244,11 @@ async function loadSites() {
 }
 
 async function loadVersion() {
-  const baseUrl = (localStorage.getItem(API_BASE_URL_KEY) || "").trim();
-  if (!baseUrl) {
-    checkedApiBaseUrl.value = "";
-    apiVersionError.value = "";
-    return;
-  }
-  checkedApiBaseUrl.value = baseUrl;
+  // 同源请求，直接 fetch 根路径获取 API 版本信息
+  checkedApiBaseUrl.value = window.location.origin;
   apiVersionError.value = "";
   try {
-    const res = await fetch(baseUrl);
+    const res = await fetch(window.location.origin);
     const contentType = res.headers.get("content-type") || "";
     if (!res.ok || !contentType.includes("application/json")) {
       apiVersionError.value =

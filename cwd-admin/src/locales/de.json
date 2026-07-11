@@ -270,6 +270,10 @@
       "placeholderHint": "Benutzerdefinierter Platzhalter für Kommentareingabe.",
       "widgetLanguage": "Widget-Sprache",
       "widgetLanguageHint": "Sprache für das Frontend-Widget.",
+"emoji": "Emoji aktivieren",
+"emojiHint": "Emoji-Schaltfläche in Kommentar- und Antwortformularen anzeigen, um Emoji-Bilder einzufügen.",
+"emotionUrl": "Emoji-Bild-CDN-URL (optional)",
+"emotionUrlHint": "Standardmäßig wird das Verzeichnis /emotion unter der API-Adresse automatisch verwendet. Für ein CDN geben Sie die Basis-URL (ohne Unterverzeichnis) ein, z.B: https://cdn.example.com/emotion",
       "save": "Speichern",
       "saving": "Speichert..."
     },

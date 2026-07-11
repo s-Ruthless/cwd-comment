@@ -270,6 +270,10 @@
       "placeholderHint": "Texte d'invite pour la saisie de commentaire.",
       "widgetLanguage": "Langue Widget",
       "widgetLanguageHint": "Langue pour le widget frontend.",
+"emoji": "Activer les emoji",
+"emojiHint": "Affiche le bouton emoji dans les formulaires de commentaire et de réponse pour insérer des images emoji.",
+"emotionUrl": "URL CDN des images d'emoji (optionnel)",
+"emotionUrlHint": "Par défaut, le répertoire /emotion sous l'adresse API est utilisé automatiquement. Pour utiliser un CDN, saisissez l'URL de base (sans sous-répertoire), ex: https://cdn.example.com/emotion",
       "save": "Sauvegarder",
       "saving": "Sauvegarde..."
     },

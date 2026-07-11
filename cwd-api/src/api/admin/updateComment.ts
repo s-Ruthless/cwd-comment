@@ -1,8 +1,9 @@
 import { Context } from 'hono';
 import { Bindings } from '../../bindings';
-import { checkContent } from '../public/postComment';
+import { checkContent, replaceEmotionSyntax } from '../public/postComment';
 import { marked } from 'marked';
 import xss from 'xss';
+import { loadFeatureSettings } from '../../utils/featureSettings';
 
 export const updateComment = async (c: Context<{ Bindings: Bindings }>) => {
   let body: any;
@@ -112,7 +113,24 @@ export const updateComment = async (c: Context<{ Bindings: Bindings }>) => {
     return c.json({ message: '评论内容不能为空' }, 400);
   }
 
-  const html = await marked.parse(cleanedContent, { async: true });
+  // Load emotion url from feature settings, fallback to auto-detect from request origin
+  let emotionUrl = '';
+  try {
+    const featureSettings = await loadFeatureSettings(c.env);
+    if (featureSettings.emotionUrl) {
+      emotionUrl = featureSettings.emotionUrl;
+    } else {
+      const reqUrl = new URL(c.req.url);
+      emotionUrl = `${reqUrl.origin}/emotion`;
+    }
+  } catch (e) {
+    console.error('UpdateComment:loadEmotionUrlFailed', e);
+  }
+
+  // Replace emotion syntax with markdown image syntax
+  const contentWithEmotion = replaceEmotionSyntax(cleanedContent, emotionUrl);
+
+  const html = await marked.parse(contentWithEmotion, { async: true });
   const contentHtml = xss(html, {
     whiteList: {
       ...xss.whiteList,
@@ -120,7 +138,7 @@ export const updateComment = async (c: Context<{ Bindings: Bindings }>) => {
       span: ['class', 'style'],
       pre: ['class'],
       div: ['class', 'style'],
-      img: ['src', 'alt', 'title', 'width', 'height', 'style']
+      img: ['src', 'alt', 'title', 'width', 'height', 'style', 'class']
     }
   });
 

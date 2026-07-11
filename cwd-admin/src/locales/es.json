@@ -270,6 +270,10 @@
       "placeholderHint": "Marcador personalizado para entrada de comentarios.",
       "widgetLanguage": "Idioma Widget",
       "widgetLanguageHint": "Idioma para el widget frontend.",
+"emoji": "Activar emoji",
+"emojiHint": "Muestra el botón de emoji en los formularios de comentario y respuesta para insertar imágenes de emoji.",
+"emotionUrl": "URL CDN de imágenes de emoji (opcional)",
+"emotionUrlHint": "Por defecto, se usa automáticamente el directorio /emotion bajo la dirección API. Para usar un CDN, ingrese la URL base (sin subdirectorio), ej: https://cdn.example.com/emotion",
       "save": "Guardar",
       "saving": "Guardando..."
     },

@@ -13,13 +13,13 @@ Authorization: Bearer <token>
 ### 1.1 获取 S3 配置
 
 ```
-GET /admin/settings/s3
+GET /api/admin/settings/s3
 ```
 
 获取当前 S3 存储配置信息。
 
 - 方法：`GET`
-- 路径：`/admin/settings/s3`
+- 路径：`/api/admin/settings/s3`
 - 鉴权：需要（Bearer Token）
 
 **成功响应**
@@ -59,13 +59,13 @@ GET /admin/settings/s3
 ### 1.2 更新 S3 配置
 
 ```
-PUT /admin/settings/s3
+PUT /api/admin/settings/s3
 ```
 
 更新 S3 存储配置信息。
 
 - 方法：`PUT`
-- 路径：`/admin/settings/s3`
+- 路径：`/api/admin/settings/s3`
 - 鉴权：需要（Bearer Token）
 
 **请求体**
@@ -115,13 +115,13 @@ PUT /admin/settings/s3
 ### 2.1 触发备份
 
 ```
-POST /admin/backup/s3
+POST /api/admin/backup/s3
 ```
 
 手动触发一次数据备份，将评论、配置和统计数据上传到 S3 存储。
 
 - 方法：`POST`
-- 路径：`/admin/backup/s3`
+- 路径：`/api/admin/backup/s3`
 - 鉴权：需要（Bearer Token）
 
 **前置条件**
@@ -171,13 +171,13 @@ POST /admin/backup/s3
 ### 2.2 获取备份列表
 
 ```
-GET /admin/backup/s3/list
+GET /api/admin/backup/s3/list
 ```
 
 获取 S3 存储中的备份文件列表。
 
 - 方法：`GET`
-- 路径：`/admin/backup/s3/list`
+- 路径：`/api/admin/backup/s3/list`
 - 鉴权：需要（Bearer Token）
 
 **前置条件**
@@ -222,13 +222,13 @@ GET /admin/backup/s3/list
 ### 2.3 下载备份
 
 ```
-GET /admin/backup/s3/download
+GET /api/admin/backup/s3/download
 ```
 
 从 S3 存储下载指定的备份文件。
 
 - 方法：`GET`
-- 路径：`/admin/backup/s3/download`
+- 路径：`/api/admin/backup/s3/download`
 - 鉴权：需要（Bearer Token）
 
 **查询参数**
@@ -286,13 +286,13 @@ GET /admin/backup/s3/download
 ### 2.4 删除备份
 
 ```
-DELETE /admin/backup/s3
+DELETE /api/admin/backup/s3
 ```
 
 删除 S3 存储中指定的备份文件。
 
 - 方法：`DELETE`
-- 路径：`/admin/backup/s3`
+- 路径：`/api/admin/backup/s3`
 - 鉴权：需要（Bearer Token）
 
 **查询参数**

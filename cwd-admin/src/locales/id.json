@@ -270,6 +270,10 @@
       "placeholderHint": "Teks kustom untuk kotak input. Kosongkan untuk default.",
       "widgetLanguage": "Bahasa Widget",
       "widgetLanguageHint": "Atur bahasa widget komentar frontend.",
+"emoji": "Aktifkan Emoji",
+"emojiHint": "Tampilkan tombol emoji di formulir komentar dan balasan untuk menyisipkan gambar emoji.",
+"emotionUrl": "URL CDN Gambar Emoji (opsional)",
+"emotionUrlHint": "Secara default, direktori /emotion di alamat API digunakan secara otomatis. Untuk menggunakan CDN, masukkan URL dasar (tanpa subdirektori), contoh: https://cdn.example.com/emotion",
       "save": "Simpan",
       "saving": "Menyimpan..."
     },

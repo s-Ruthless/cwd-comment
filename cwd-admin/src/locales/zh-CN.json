@@ -268,6 +268,10 @@
       "placeholderHint": "自定义评论输入框的提示文字，支持换行。留空则使用默认值。",
       "widgetLanguage": "组件语言",
       "widgetLanguageHint": "设置前端评论组件显示的语言。",
+"emoji": "开启表情功能",
+"emojiHint": "开启后，评论框和回复框中会显示表情按钮，用户可以插入表情图片。",
+"emotionUrl": "表情图片 CDN 地址（可选）",
+"emotionUrlHint": "默认自动使用当前 API 地址下的 /emotion 目录，无需手动填写。如需使用自定义 CDN，请填写 CDN 地址（不含子目录），例如：https://cdn.example.com/emotion",
       "save": "保存",
       "saving": "保存中..."
     },

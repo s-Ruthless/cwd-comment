@@ -16,22 +16,22 @@ npm run deploy
 
 ## 前端更新
 
-如果你的管理后台项目，是通过 GitHub 仓库部署到 Cloudflare Pages，不需要手动更新，只用拉取官方仓库代码，重新推送即可触发重新部署（无需手动）。
+管理后台已内置在 API Worker 中，更新流程如下：
 
-### 管理后台
-
-如果使用官方后台不需要更新。
-
-> [!WARNING]  
-> 存在一个弊端，如果官方后台版本有了大更新，而你部署的 api 端没有及时更新部署，可能会导致管理后台无法正常使用（无法获取到最新的接口），正常情况下无需担心。
-
-```
+```bash
 cd cwd-admin
 npm install
 npm run build
 ```
 
-将打包后的代码更新到你托管的地方（例如 Cloudflare Pages、GitHub Pages、Netlify 等）。  
+构建会自动将产物复制到 `cwd-api/public/admin/`，然后重新部署 API Worker：
+
+```bash
+cd ../cwd-api
+npm run deploy
+```
+
+部署后访问 `https://your-api-worker.workers.dev/admin/` 即可使用最新版本的管理后台。
 
 ### 评论端
 

@@ -11,13 +11,13 @@ Authorization: Bearer <token>
 ## 1.1 获取评论配置
 
 ```
-GET /admin/settings/comments
+GET /api/admin/settings/comments
 ```
 
 获取评论配置，例如博主邮箱、徽标、头像前缀、管理员密钥等。
 
 - 方法：`GET`
-- 路径：`/admin/settings/comments`
+- 路径：`/api/admin/settings/comments`
 - 鉴权：需要（Bearer Token）
 
 **成功响应**
@@ -67,13 +67,13 @@ GET /admin/settings/comments
 ## 1.2 更新评论配置
 
 ```
-PUT /admin/settings/comments
+PUT /api/admin/settings/comments
 ```
 
 更新评论配置。
 
 - 方法：`PUT`
-- 路径：`/admin/settings/comments`
+- 路径：`/api/admin/settings/comments`
 - 鉴权：需要（Bearer Token）
 
 **请求头**

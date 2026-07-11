@@ -5,13 +5,13 @@
 ## 获取功能设置
 
 ```
-GET /admin/settings/features
+GET /api/admin/settings/features
 ```
 
 获取当前的功能开关配置。
 
 - 方法：`GET`
-- 路径：`/admin/settings/features`
+- 路径：`/api/admin/settings/features`
 - 鉴权：需要 Bearer Token
 
 **成功响应**
@@ -52,13 +52,13 @@ GET /admin/settings/features
 ## 更新功能设置
 
 ```
-PUT /admin/settings/features
+PUT /api/admin/settings/features
 ```
 
 更新功能开关配置。
 
 - 方法：`PUT`
-- 路径：`/admin/settings/features`
+- 路径：`/api/admin/settings/features`
 - 鉴权：需要 Bearer Token
 
 **请求头**

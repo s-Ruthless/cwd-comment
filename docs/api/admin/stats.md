@@ -11,13 +11,13 @@ Authorization: Bearer <token>
 ## 1.1 获取评论统计数据（数据看板）
 
 ```
-GET /admin/stats/comments
+GET /api/admin/stats/comments
 ```
 
 用于管理后台「数据看板」展示评论整体统计、按站点统计以及最近 30 天评论趋势。
 
 - 方法：`GET`
-- 路径：`/admin/stats/comments`
+- 路径：`/api/admin/stats/comments`
 - 鉴权：需要（Bearer Token）
 
 **查询参数**
@@ -103,13 +103,13 @@ GET /admin/stats/comments
 ## 1.2 获取点赞统计数据（点赞排行榜）
 
 ```
-GET /admin/likes/stats
+GET /api/admin/likes/stats
 ```
 
 用于管理后台展示按点赞数排序的页面列表，例如「点赞排行榜」。
 
 - 方法：`GET`
-- 路径：`/admin/likes/stats`
+- 路径：`/api/admin/likes/stats`
 - 鉴权：需要（Bearer Token）
 
 **查询参数**
@@ -162,13 +162,13 @@ GET /admin/likes/stats
 ## 1.4 获取点赞记录列表
 
 ```
-GET /admin/likes/list
+GET /api/admin/likes/list
 ```
 
 用于管理后台查看单条点赞记录列表，支持按页面、用户以及时间范围筛选。
 
 - 方法：`GET`
-- 路径：`/admin/likes/list`
+- 路径：`/api/admin/likes/list`
 - 鉴权：需要（Bearer Token）
 
 **查询参数**

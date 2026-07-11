@@ -4,8 +4,10 @@
 
 import { Component } from './Component.js';
 import { AdminAuthModal } from './AdminAuthModal.js';
+import { EmojiPicker } from './EmojiPicker.js';
 import { auth } from '../utils/auth.js';
 import { renderMarkdown } from '../utils/markdown.js';
+import { replaceEmotionSyntax } from '../utils/emotion.js';
 
 export class CommentForm extends Component {
 	/**
@@ -33,8 +35,10 @@ export class CommentForm extends Component {
 			},
 			activeTab: 'write', // 'write' | 'preview'
 			showPreview: false,
+			showEmojiPicker: false,
 		};
 		this.modal = null;
+		this.emojiPicker = null;
 	}
 
 	render() {
@@ -109,12 +113,12 @@ export class CommentForm extends Component {
 										placeholder: placeholderText,
 										disabled: submitting,
 										onInput: (e) => this.handleFieldChange('content', e.target.value),
-										onKeydown: (e) => this.handleContentKeydown(e),
-									},
-								}),
-								...(formErrors.content ? [this.createTextElement('span', formErrors.content, 'cwd-error-text')] : []),
-							],
-						}),
+									onKeydown: (e) => this.handleContentKeydown(e),
+								},
+							}),
+							...(formErrors.content ? [this.createTextElement('span', formErrors.content, 'cwd-error-text')] : []),
+						],
+					}),
 					],
 				}),
 
@@ -122,6 +126,29 @@ export class CommentForm extends Component {
 				this.createElement('div', {
 					className: 'cwd-form-actions',
 					children: [
+						// 表情按钮（与提交按钮同行）
+						...(this.props.enableEmoji !== false ? [
+							this.createElement('div', {
+								className: 'cwd-emoji-btn-wrapper',
+								children: [
+									this.createElement('button', {
+										className: 'cwd-btn cwd-btn-secondary cwd-btn-emoji',
+										attributes: {
+											type: 'button',
+											disabled: submitting,
+											onClick: (e) => {
+												e.preventDefault();
+												this.toggleEmojiPicker();
+											},
+										},
+										text: '😊 ' + this.t('emoji'),
+									}),
+									this.createElement('div', {
+										className: 'cwd-emoji-picker-container',
+									}),
+								],
+							}),
+						] : []),
 						this.createElement('button', {
 							className: `cwd-btn cwd-btn-secondary cwd-btn-preview ${this.state.showPreview ? 'cwd-btn-active' : ''}`,
 							attributes: {
@@ -152,7 +179,7 @@ export class CommentForm extends Component {
 									this.createElement('div', {
 										className: 'cwd-preview-content cwd-comment-content',
 										// 直接设置 innerHTML
-										html: renderMarkdown(localForm.content),
+										html: renderMarkdown(replaceEmotionSyntax(localForm.content, this.props.emotionUrl || '')),
 									}),
 								],
 							}),
@@ -163,6 +190,20 @@ export class CommentForm extends Component {
 
 		// 设置输入框的值
 		this.setInputValues(root, localForm);
+
+		// 创建表情选择器
+		const emojiContainer = root.querySelector('.cwd-emoji-picker-container');
+		if (emojiContainer && this.props.enableEmoji !== false) {
+			this.emojiPicker = new EmojiPicker(emojiContainer, {
+				emotionUrl: this.props.emotionUrl || '',
+				onSelect: (insertText) => this.insertEmoji(insertText),
+				onClose: () => { this.state.showEmojiPicker = false; },
+			});
+			this.emojiPicker.render();
+			if (this.state.showEmojiPicker) {
+				this.emojiPicker.open();
+			}
+		}
 
 		this.elements.root = root;
 		this.empty(this.container);
@@ -365,8 +406,39 @@ export class CommentForm extends Component {
 	updatePreviewContent(content) {
 		const previewContent = this.elements.root.querySelector('.cwd-preview-content');
 		if (previewContent) {
-			previewContent.innerHTML = renderMarkdown(content);
+			previewContent.innerHTML = renderMarkdown(replaceEmotionSyntax(content, this.props.emotionUrl || ''));
 		}
+	}
+
+	toggleEmojiPicker() {
+		this.state.showEmojiPicker = !this.state.showEmojiPicker;
+		if (this.emojiPicker) {
+			if (this.state.showEmojiPicker) {
+				this.emojiPicker.open();
+			} else {
+				this.emojiPicker.close();
+			}
+		}
+	}
+
+	insertEmoji(insertText) {
+		const textarea = this.elements.root?.querySelector('textarea');
+		if (textarea) {
+			const start = textarea.selectionStart;
+			const end = textarea.selectionEnd;
+			const value = textarea.value;
+			const newValue = value.slice(0, start) + insertText + value.slice(end);
+			textarea.value = newValue;
+			const newPos = start + insertText.length;
+			textarea.selectionStart = newPos;
+			textarea.selectionEnd = newPos;
+			textarea.focus();
+			this.handleFieldChange('content', newValue);
+			if (this.state.showPreview) {
+				this.updatePreviewContent(newValue);
+			}
+		}
+		this.state.showEmojiPicker = false;
 	}
 
 	handleSubmit(e) {

@@ -275,17 +275,17 @@
 }
 
 .cwd-reply-textarea {
-  width: 100%;
-  padding: 8px 12px;
-  font-size: 14px;
-  line-height: 1.5;
-  color: var(--cwd-text, #24292f);
-  background: var(--cwd-bg-input, #ffffff);
-  border: 1px solid var(--cwd-border, #d0d7de);
-  border-radius: var(--cwd-radius, 6px);
-  resize: vertical;
-  font-family: inherit;
-  margin-bottom: 8px;
+display: block;
+width: 100%;
+padding: 8px 12px;
+font-size: 14px;
+line-height: 1.5;
+color: var(--cwd-text, #24292f);
+background: var(--cwd-bg-input, #ffffff);
+border: 1px solid var(--cwd-border, #d0d7de);
+border-radius: var(--cwd-radius, 6px);
+resize: vertical;
+font-family: inherit;
 }
 
 .cwd-reply-textarea:focus {
@@ -295,9 +295,10 @@
 }
 
 .cwd-reply-actions {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
+display: flex;
+gap: 8px;
+justify-content: flex-end;
+margin-top: 16px;
 }
 
 .cwd-btn-small {
@@ -548,9 +549,21 @@
 .cwd-comment-content img,
 .cwd-comment-content video,
 .cwd-comment-content iframe {
-  max-width: 100%;
-  height: auto;
-  max-height: 400px;
+max-width: 100%;
+height: auto;
+max-height: 400px;
+}
+
+/* 表情图片：小尺寸内联显示，不触发灯箱 */
+.cwd-comment-content img.cwd-emotion-img,
+.cwd-comment-content img[src*="/emotion/"] {
+display: inline-block;
+width: auto;
+max-height: 2.5em;
+max-width: 60px;
+vertical-align: middle;
+margin: 0 2px;
+cursor: default;
 }
 
 .cwd-like {
@@ -1124,5 +1137,165 @@
     top: 10px;
     right: 10px;
     background: rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* ========== Emoji Picker ========== */
+.cwd-emoji-trigger-wrapper {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.cwd-emoji-btn-wrapper {
+  position: relative;
+  margin-right: auto;
+}
+
+.cwd-btn-emoji {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  font-size: 13px;
+}
+
+.cwd-reply-emoji-wrapper {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+  position: relative;
+}
+
+/*
+ * 关键：不设置 .cwd-emoji-picker 和 .cwd-emoji-picker-container 的 position:relative
+ * 这样 .cwd-emoji-panel 的 position:absolute 会相对于
+ * .cwd-emoji-btn-wrapper（有按钮高度）定位，
+ * 而非 0 高度的容器，避免面板盖住按钮
+ */
+
+.cwd-emoji-panel {
+  position: absolute;
+  bottom: calc(100% + 16px);
+  left: 0;
+  z-index: 100;
+  width: 380px;
+  background: var(--cwd-bg, #ffffff);
+  border: 1px solid var(--cwd-border, #d0d7de);
+  border-radius: var(--cwd-radius, 6px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.cwd-reply-emoji-wrapper .cwd-emoji-panel {
+  bottom: calc(100% + 16px);
+  left: 0;
+}
+
+.cwd-emoji-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 10px;
+  max-height: 200px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.cwd-emoji-grid::-webkit-scrollbar {
+  width: 6px;
+}
+
+.cwd-emoji-grid::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.cwd-emoji-grid::-webkit-scrollbar-thumb {
+  background: var(--cwd-border, #d0d7de);
+  border-radius: 3px;
+}
+
+.cwd-emoji-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.15s;
+  flex-shrink: 0;
+}
+
+.cwd-emoji-item:hover {
+  background: var(--cwd-bg-hover, #f6f8fa);
+}
+
+.cwd-emoji-item img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.cwd-emoji-item-text {
+  font-size: 16px;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 36px;
+}
+
+.cwd-emoji-tabs {
+  display: flex;
+  border-top: 1px solid var(--cwd-border, #d0d7de);
+  background: var(--cwd-bg-secondary, #f6f8fa);
+  overflow-x: auto;
+}
+
+.cwd-emoji-tab {
+  flex: 1;
+  min-width: 60px;
+  padding: 8px 4px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--cwd-text-secondary, #6e7781);
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.cwd-emoji-tab:hover {
+  background: var(--cwd-bg-hover, #eaeef2);
+}
+
+.cwd-emoji-tab-active {
+  background: var(--cwd-bg, #ffffff);
+  color: var(--cwd-primary, #0969da);
+  font-weight: 600;
+}
+
+.cwd-emoji-loading,
+.cwd-emoji-empty {
+  padding: 20px;
+  text-align: center;
+  color: var(--cwd-text-secondary, #6e7781);
+  font-size: 13px;
+}
+
+@media (max-width: 640px) {
+  .cwd-emoji-panel {
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    border-radius: var(--cwd-radius, 6px) var(--cwd-radius, 6px) 0 0;
+    max-width: 100%;
+  }
+
+  .cwd-emoji-grid {
+    max-height: 240px;
   }
 }

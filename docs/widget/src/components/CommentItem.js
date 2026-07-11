@@ -222,6 +222,8 @@ export class CommentItem extends Component {
 					onCancel: () => this.handleCancelReply(),
 					onClearError: () => this.handleClearReplyError(),
 					placeholder: this.props.replyPlaceholder,
+					emotionUrl: this.props.emotionUrl,
+					enableEmoji: this.props.enableEmoji,
 					t: this.t
 				});
 				this.replyEditor.render();
@@ -250,6 +252,8 @@ export class CommentItem extends Component {
 						adminBadge: this.props.adminBadge,
 						enableCommentLike: this.props.enableCommentLike,
 						replyPlaceholder: this.props.replyPlaceholder,
+						emotionUrl: this.props.emotionUrl,
+						enableEmoji: this.props.enableEmoji,
 						onReply: this.props.onReply,
 						onLikeComment: this.props.onLikeComment,
 						onSubmitReply: this.props.onSubmitReply,
@@ -304,6 +308,8 @@ export class CommentItem extends Component {
 					onCancel: () => this.handleCancelReply(),
 					onClearError: () => this.handleClearReplyError(),
 					placeholder: this.props.replyPlaceholder,
+					emotionUrl: this.props.emotionUrl,
+					enableEmoji: this.props.enableEmoji,
 					t: this.t
 				});
 				this.replyEditor.render();

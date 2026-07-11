@@ -1,12 +1,9 @@
-const rawEnvApiBaseUrl = (import.meta.env.VITE_API_BASE_URL || '').trim();
-
+// Admin 和 API 现在在同一个 Worker 上，默认使用同源地址。
+// 保留 localStorage 覆盖能力以兼容旧版部署场景。
 export function getApiBaseUrl(): string {
 	const stored = (localStorage.getItem('cwd_admin_api_base_url') || '').trim();
-	const source = stored || rawEnvApiBaseUrl;
-	const apiBaseUrl = source.replace(/\/+$/, '');
-	if (!apiBaseUrl) {
-		throw new Error('未配置 API 地址，请在登录页填写后重试');
-	}
+	const apiBaseUrl = stored.replace(/\/+$/, '');
+	// 如果没有存储的值，返回空字符串（同源请求）
 	return apiBaseUrl;
 }
 
@@ -40,12 +37,13 @@ async function request<T>(method: HttpMethod, path: string, body?: unknown): Pro
 			if (typeof window !== 'undefined') {
 				try {
 					const url = new URL(window.location.href);
-					url.pathname = '/login';
+					// 保持 base path /admin/
+					url.pathname = '/admin/login';
 					url.search = '';
 					url.hash = '';
 					window.location.href = url.toString();
 				} catch {
-					window.location.href = '/login';
+					window.location.href = '/admin/login';
 				}
 			}
 		}

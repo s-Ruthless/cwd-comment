@@ -70,7 +70,7 @@ https://cwd.js.org/cwd.js
 评论组件语言的优先级如下：
 
 1. 前端实例化时传入的 `lang` 参数（最高优先级）
-2. 后端在「功能设置」中配置的 `widgetLanguage`（通过 `/admin/settings/features` 接口下发）
+2. 后端在「功能设置」中配置的 `widgetLanguage`（通过 `/api/admin/settings/features` 接口下发）
 3. 浏览器语言自动检测（当以上两项都为空或为 `auto` 时生效）
 
 推荐做法：
@@ -85,7 +85,7 @@ https://cwd.js.org/cwd.js
 
 头像前缀、博主邮箱和标识等信息由后端接口 `/api/config/comments` 提供，无需在前端进行配置。
 
-当 `/admin/settings/comments` 中配置了“评论博主邮箱”（`adminEmail`）时：
+当 `/api/admin/settings/comments` 中配置了“评论博主邮箱”（`adminEmail`）时：
 
 - 前台组件会将该邮箱视为“管理员邮箱”；
 - 使用该邮箱发表评论时，会在邮箱输入框失焦后触发“管理员身份验证”弹窗；

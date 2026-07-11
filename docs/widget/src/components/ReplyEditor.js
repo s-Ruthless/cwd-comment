@@ -3,7 +3,9 @@
  */
 
 import { Component } from './Component.js';
+import { EmojiPicker } from './EmojiPicker.js';
 import { renderMarkdown } from '../utils/markdown.js';
+import { replaceEmotionSyntax } from '../utils/emotion.js';
 
 export class ReplyEditor extends Component {
 	/**
@@ -27,7 +29,9 @@ export class ReplyEditor extends Component {
 			// 如果没有昵称或邮箱，显示用户信息输入框。且一旦显示，在当前编辑器生命周期内保持显示，避免输入过程中消失
 			showUserInfo: !currentUser || !currentUser.name || !currentUser.email,
 			showPreview: false,
+			showEmojiPicker: false,
 		};
+		this.emojiPicker = null;
 	}
 
 	render() {
@@ -83,7 +87,7 @@ export class ReplyEditor extends Component {
 					},
 				}),
 
-				// 错误提示
+					// 错误提示
 				...(this.props.error
 					? [
 							this.createElement('div', {
@@ -103,11 +107,34 @@ export class ReplyEditor extends Component {
 						]
 					: []),
 
-				// 操作按钮
-				this.createElement('div', {
-					className: 'cwd-reply-actions',
-					children: [
-						this.createElement('button', {
+			// 操作按钮
+			this.createElement('div', {
+				className: 'cwd-reply-actions',
+				children: [
+					// 表情按钮（与提交按钮同行）
+					...(this.props.enableEmoji !== false ? [
+						this.createElement('div', {
+							className: 'cwd-emoji-btn-wrapper',
+							children: [
+								this.createElement('button', {
+									className: 'cwd-btn cwd-btn-secondary cwd-btn-emoji cwd-btn-small',
+									attributes: {
+										type: 'button',
+										disabled: this.props.submitting,
+										onClick: (e) => {
+											e.preventDefault();
+											this.toggleEmojiPicker();
+										},
+									},
+									text: '😊 ' + this.t('emoji'),
+								}),
+								this.createElement('div', {
+									className: 'cwd-emoji-picker-container',
+								}),
+							],
+						}),
+					] : []),
+					this.createElement('button', {
 							className: `cwd-btn cwd-btn-secondary cwd-btn-small cwd-btn-preview ${this.state.showPreview ? 'cwd-btn-active' : ''}`,
 							attributes: {
 								type: 'button',
@@ -146,7 +173,7 @@ export class ReplyEditor extends Component {
 									this.createElement('div', {
 										className: 'cwd-preview-content cwd-comment-content',
 										// 直接设置 innerHTML
-										html: renderMarkdown(this.state.content),
+										html: renderMarkdown(replaceEmotionSyntax(this.state.content, this.props.emotionUrl || '')),
 									}),
 								],
 							}),
@@ -159,6 +186,20 @@ export class ReplyEditor extends Component {
 		const textarea = root.querySelector('textarea');
 		if (textarea) {
 			textarea.value = this.state.content;
+		}
+
+		// 创建表情选择器
+		const emojiContainer = root.querySelector('.cwd-emoji-picker-container');
+		if (emojiContainer && this.props.enableEmoji !== false) {
+			this.emojiPicker = new EmojiPicker(emojiContainer, {
+				emotionUrl: this.props.emotionUrl || '',
+				onSelect: (insertText) => this.insertEmoji(insertText),
+				onClose: () => { this.state.showEmojiPicker = false; },
+			});
+			this.emojiPicker.render();
+			if (this.state.showEmojiPicker) {
+				this.emojiPicker.open();
+			}
 		}
 
 		this.elements.root = root;
@@ -232,8 +273,42 @@ export class ReplyEditor extends Component {
 	updatePreviewContent(content) {
 		const previewContent = this.elements.root?.querySelector('.cwd-preview-content');
 		if (previewContent) {
-			previewContent.innerHTML = renderMarkdown(content);
+			previewContent.innerHTML = renderMarkdown(replaceEmotionSyntax(content, this.props.emotionUrl || ''));
 		}
+	}
+
+	toggleEmojiPicker() {
+		this.state.showEmojiPicker = !this.state.showEmojiPicker;
+		if (this.emojiPicker) {
+			if (this.state.showEmojiPicker) {
+				this.emojiPicker.open();
+			} else {
+				this.emojiPicker.close();
+			}
+		}
+	}
+
+	insertEmoji(insertText) {
+		const textarea = this.elements.root?.querySelector('textarea');
+		if (textarea) {
+			const start = textarea.selectionStart;
+			const end = textarea.selectionEnd;
+			const value = textarea.value;
+			const newValue = value.slice(0, start) + insertText + value.slice(end);
+			textarea.value = newValue;
+			const newPos = start + insertText.length;
+			textarea.selectionStart = newPos;
+			textarea.selectionEnd = newPos;
+			textarea.focus();
+			this.state.content = newValue;
+			if (this.props.onUpdate) {
+				this.props.onUpdate(newValue);
+			}
+			if (this.state.showPreview) {
+				this.updatePreviewContent(newValue);
+			}
+		}
+		this.state.showEmojiPicker = false;
 	}
 
 	handleSubmit() {

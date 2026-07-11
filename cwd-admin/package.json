@@ -1,11 +1,12 @@
 {
   "name": "cwd-admin",
-  "version": "0.1.11",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "preview": "vite preview",
-    "build": "vite build"
+    "preview": "npm run build && wrangler dev",
+    "build": "vite build && node scripts/copy-to-api.cjs",
+    "deploy": "npm run build"
   },
   "dependencies": {
     "@phosphor-icons/vue": "^2.2.1",
@@ -15,10 +16,12 @@
     "vue-router": "^4.4.5"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.44.0",
     "@vitejs/plugin-vue": "^5.1.4",
     "less": "^4.5.1",
     "typescript": "^5.5.2",
     "vite": "^6.0.11",
-    "vue-tsc": "^2.1.10"
+    "vue-tsc": "^2.1.10",
+    "wrangler": "^4.110.0"
   }
 }

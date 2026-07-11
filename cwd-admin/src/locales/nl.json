@@ -270,6 +270,10 @@
       "placeholderHint": "Aangepaste tekst voor het invoerveld. Leeg laten voor standaard.",
       "widgetLanguage": "Widgettaal",
       "widgetLanguageHint": "Taal van de frontend-widget.",
+"emoji": "Emoji inschakelen",
+"emojiHint": "Toont emoji-knop in commentaar- en antwoordformulieren om emoji-afbeeldingen in te voegen.",
+"emotionUrl": "Emoji afbeelding CDN URL (optioneel)",
+"emotionUrlHint": "Standaard wordt de map /emotion onder het API-adres automatisch gebruikt. Voor een CDN, voer de basis-URL in (zonder submap), bijv: https://cdn.example.com/emotion",
       "save": "Opslaan",
       "saving": "Opslaan..."
     },

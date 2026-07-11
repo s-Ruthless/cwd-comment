@@ -268,6 +268,10 @@
       "placeholderHint": "Custom placeholder for comment input.",
       "widgetLanguage": "Widget Language",
       "widgetLanguageHint": "Language for the frontend widget.",
+"emoji": "Enable Emoji",
+"emojiHint": "Show emoji button in comment and reply forms so users can insert emoji images.",
+"emotionUrl": "Emoji CDN URL (Optional)",
+"emotionUrlHint": "By default, the /emotion directory under the current API address is used automatically. To use a custom CDN, enter the CDN base URL (without sub-directory), e.g. https://cdn.example.com/emotion",
       "save": "Save",
       "saving": "Saving..."
     },

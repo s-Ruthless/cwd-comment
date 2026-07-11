@@ -11,13 +11,13 @@ Authorization: Bearer <token>
 ## 1.1 获取访问统计概览
 
 ```
-GET /admin/analytics/overview
+GET /api/admin/analytics/overview
 ```
 
 用于管理后台「访问统计」页面展示整体访问数据，包括总 PV、总页面数、今日/昨日/本周/上周/本月/上月访问量以及最近 30 天的访问趋势。
 
 - 方法：`GET`
-- 路径：`/admin/analytics/overview`
+- 路径：`/api/admin/analytics/overview`
 - 鉴权：需要（Bearer Token）
 
 **查询参数**
@@ -89,13 +89,13 @@ GET /admin/analytics/overview
 ## 1.2 获取页面访问统计
 
 ```
-GET /admin/analytics/pages
+GET /api/admin/analytics/pages
 ```
 
 用于管理后台「访问统计」页面展示各个页面的访问明细，支持按 PV 排序或最新访问排序。
 
 - 方法：`GET`
-- 路径：`/admin/analytics/pages`
+- 路径：`/api/admin/analytics/pages`
 - 鉴权：需要（Bearer Token）
 
 **查询参数**

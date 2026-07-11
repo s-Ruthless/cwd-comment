@@ -87,7 +87,7 @@ const handleDownload = async (key: string) => {
   try {
     const apiBaseUrl = getApiBaseUrl();
     const token = localStorage.getItem('cwd_admin_token');
-    const url = `${apiBaseUrl}/admin/backup/s3/download?key=${encodeURIComponent(key)}`;
+    const url = `${apiBaseUrl}/api/admin/backup/s3/download?key=${encodeURIComponent(key)}`;
 
     const res = await fetch(url, {
       method: 'GET',

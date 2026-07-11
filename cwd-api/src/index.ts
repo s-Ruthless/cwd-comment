@@ -40,6 +40,7 @@ import { getS3Settings, updateS3Settings } from './api/admin/s3Settings';
 import { triggerS3Backup, listS3Backups, deleteS3BackupHandler, downloadS3BackupHandler } from './api/admin/triggerS3Backup';
 import { telegramWebhook } from './api/telegram/webhook';
 import { ensureSchema } from './utils/dbMigration';
+import owoData from './data/owo.json';
 
 const app = new Hono<{ Bindings: Bindings }>();
 const VERSION = `${packageJson.version}`;
@@ -255,10 +256,6 @@ app.use('/api/*', async (c, next) => {
 	const corsMiddleware = customCors();
 	return corsMiddleware(c, next);
 });
-app.use('/admin/*', async (c, next) => {
-	const corsMiddleware = customCors();
-	return corsMiddleware(c, next);
-});
 
 app.get('/', (c) => {
 	c.header('Access-Control-Allow-Origin', '*');
@@ -275,43 +272,54 @@ app.post('/api/like', likePage);
 app.post('/api/comments/like', likeComment);
 app.delete('/api/comments/like', likeComment);
 app.post('/api/telegram/webhook', telegramWebhook);
+app.get('/api/emotions', (c) => {
+	const url = new URL(c.req.url);
+	const baseUrl = `${url.origin}/emotion`;
+	return c.json({ data: owoData, baseUrl });
+});
+
 app.get('/api/config/comments', async (c) => {
 	try {
 		const settings = await loadCommentSettings(c.env);
 		const featureSettings = await loadFeatureSettings(c.env);
 		const { adminKey, adminKeySet, blockedIps, blockedEmails, ...publicSettings } = settings as any;
 
-		return c.json({ ...publicSettings, ...featureSettings });
+		// Auto-detect emotion URL from request origin, fallback to manual override
+		const url = new URL(c.req.url);
+		const autoEmotionUrl = `${url.origin}/emotion`;
+		const emotionUrl = featureSettings.emotionUrl || autoEmotionUrl;
+
+		return c.json({ ...publicSettings, ...featureSettings, emotionUrl });
 	} catch (e: any) {
 		return c.json({ message: e.message || '加载评论配置失败' }, 500);
 	}
 });
 
-app.post('/admin/login', adminLogin);
-app.use('/admin/*', adminAuth);
-app.delete('/admin/comments/delete', deleteComment);
-app.get('/admin/comments/list', listComments);
-app.get('/admin/comments/export', exportComments);
-app.post('/admin/comments/import', importComments);
-app.get('/admin/export/config', exportConfig);
-app.post('/admin/import/config', importConfig);
-app.get('/admin/export/stats', exportStats);
-app.post('/admin/import/stats', importStats);
-app.get('/admin/stats/comments', getStats);
-app.get('/admin/export/backup', exportBackup);
-app.post('/admin/import/backup', importBackup);
-app.put('/admin/comments/status', updateStatus);
-app.put('/admin/comments/update', updateComment);
-app.get('/admin/analytics/overview', getVisitOverview);
-app.get('/admin/analytics/pages', getVisitPages);
-app.get('/admin/stats/sites', getSites);
-app.get('/admin/likes/list', listLikes);
-app.get('/admin/likes/stats', getLikeStats);
-app.get('/admin/settings/features', getFeatureSettings);
-app.put('/admin/settings/features', updateFeatureSettings);
-app.get('/admin/settings/email', getAdminEmail);
-app.put('/admin/settings/email', setAdminEmail);
-app.get('/admin/settings/email-notify', async (c) => {
+app.post('/api/admin/login', adminLogin);
+app.use('/api/admin/*', adminAuth);
+app.delete('/api/admin/comments/delete', deleteComment);
+app.get('/api/admin/comments/list', listComments);
+app.get('/api/admin/comments/export', exportComments);
+app.post('/api/admin/comments/import', importComments);
+app.get('/api/admin/export/config', exportConfig);
+app.post('/api/admin/import/config', importConfig);
+app.get('/api/admin/export/stats', exportStats);
+app.post('/api/admin/import/stats', importStats);
+app.get('/api/admin/stats/comments', getStats);
+app.get('/api/admin/export/backup', exportBackup);
+app.post('/api/admin/import/backup', importBackup);
+app.put('/api/admin/comments/status', updateStatus);
+app.put('/api/admin/comments/update', updateComment);
+app.get('/api/admin/analytics/overview', getVisitOverview);
+app.get('/api/admin/analytics/pages', getVisitPages);
+app.get('/api/admin/stats/sites', getSites);
+app.get('/api/admin/likes/list', listLikes);
+app.get('/api/admin/likes/stats', getLikeStats);
+app.get('/api/admin/settings/features', getFeatureSettings);
+app.put('/api/admin/settings/features', updateFeatureSettings);
+app.get('/api/admin/settings/email', getAdminEmail);
+app.put('/api/admin/settings/email', setAdminEmail);
+app.get('/api/admin/settings/email-notify', async (c) => {
 	try {
 		const settings = await loadEmailNotificationSettings(c.env);
 		return c.json(settings);
@@ -319,7 +327,7 @@ app.get('/admin/settings/email-notify', async (c) => {
 		return c.json({ message: e.message || '加载邮件通知配置失败' }, 500);
 	}
 });
-app.put('/admin/settings/email-notify', async (c) => {
+app.put('/api/admin/settings/email-notify', async (c) => {
 	try {
 		const body = await c.req.json();
 		const globalEnabled = typeof body.globalEnabled === 'boolean' ? body.globalEnabled : undefined;
@@ -338,21 +346,21 @@ app.put('/admin/settings/email-notify', async (c) => {
 	}
 });
 
-app.post('/admin/settings/email-test', testEmail);
+app.post('/api/admin/settings/email-test', testEmail);
 
-app.get('/admin/settings/telegram', getTelegramSettings);
-app.put('/admin/settings/telegram', updateTelegramSettings);
-app.post('/admin/settings/telegram/setup', setupTelegramWebhook);
-app.post('/admin/settings/telegram/test', testTelegramMessage);
+app.get('/api/admin/settings/telegram', getTelegramSettings);
+app.put('/api/admin/settings/telegram', updateTelegramSettings);
+app.post('/api/admin/settings/telegram/setup', setupTelegramWebhook);
+app.post('/api/admin/settings/telegram/test', testTelegramMessage);
 
-app.get('/admin/settings/s3', getS3Settings);
-app.put('/admin/settings/s3', updateS3Settings);
-app.post('/admin/backup/s3', triggerS3Backup);
-app.get('/admin/backup/s3/list', listS3Backups);
-app.delete('/admin/backup/s3', deleteS3BackupHandler);
-app.get('/admin/backup/s3/download', downloadS3BackupHandler);
+app.get('/api/admin/settings/s3', getS3Settings);
+app.put('/api/admin/settings/s3', updateS3Settings);
+app.post('/api/admin/backup/s3', triggerS3Backup);
+app.get('/api/admin/backup/s3/list', listS3Backups);
+app.delete('/api/admin/backup/s3', deleteS3BackupHandler);
+app.get('/api/admin/backup/s3/download', downloadS3BackupHandler);
 
-app.get('/admin/settings/admin-display', async (c) => {
+app.get('/api/admin/settings/admin-display', async (c) => {
 	try {
 		const settings = await loadAdminDisplaySettings(c.env);
 		return c.json(settings);
@@ -361,7 +369,7 @@ app.get('/admin/settings/admin-display', async (c) => {
 	}
 });
 
-app.put('/admin/settings/admin-display', async (c) => {
+app.put('/api/admin/settings/admin-display', async (c) => {
 	try {
 		const body = await c.req.json();
 		const layoutTitle = typeof body.layoutTitle === 'string' ? body.layoutTitle : undefined;
@@ -376,7 +384,7 @@ app.put('/admin/settings/admin-display', async (c) => {
 	}
 });
 
-app.get('/admin/settings/comments', async (c) => {
+app.get('/api/admin/settings/comments', async (c) => {
 	try {
 		const settings = await loadCommentSettings(c.env);
 		return c.json(settings);
@@ -384,7 +392,7 @@ app.get('/admin/settings/comments', async (c) => {
 		return c.json({ message: e.message || '加载评论配置失败' }, 500);
 	}
 });
-app.put('/admin/settings/comments', async (c) => {
+app.put('/api/admin/settings/comments', async (c) => {
 	try {
 		const body = await c.req.json();
 		const rawAdminEmail = typeof body.adminEmail === 'string' ? body.adminEmail : '';
@@ -429,7 +437,7 @@ app.put('/admin/settings/comments', async (c) => {
 	}
 });
 
-app.post('/admin/comments/block-ip', async (c) => {
+app.post('/api/admin/comments/block-ip', async (c) => {
 	try {
 		const body = await c.req.json();
 		const rawIp = typeof body.ip === 'string' ? body.ip : '';
@@ -465,7 +473,7 @@ app.post('/admin/comments/block-ip', async (c) => {
 	}
 });
 
-app.post('/admin/comments/block-email', async (c) => {
+app.post('/api/admin/comments/block-email', async (c) => {
 	try {
 		const body = await c.req.json();
 		const rawEmail = typeof body.email === 'string' ? body.email : '';
@@ -503,6 +511,19 @@ app.post('/admin/comments/block-email', async (c) => {
 	} catch (e: any) {
 		return c.json({ message: e.message || '操作失败' }, 500);
 	}
+});
+
+// SPA fallback: serve admin frontend for /admin/* routes
+app.get('/admin/*', async (c) => {
+	try {
+		const indexUrl = new URL('/admin/index.html', c.req.url);
+		return c.env.ASSETS.fetch(indexUrl.toString());
+	} catch {
+		return c.notFound();
+	}
+});
+app.get('/admin', (c) => {
+	return c.redirect('/admin/');
 });
 
 export default app;

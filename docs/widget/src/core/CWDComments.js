@@ -8,6 +8,7 @@ import { createCommentStore } from './store.js';
 import { CommentForm } from '@/components/CommentForm.js';
 import { CommentList } from '@/components/CommentList.js';
 import { ImagePreview } from '@/components/ImagePreview.js';
+import { setApiBaseUrl } from '@/utils/emotion.js';
 import styles from '@/styles/main.css?inline';
 import { locales } from '@/locales/index.js';
 
@@ -126,6 +127,8 @@ export class CWDComments {
 				commentPlaceholder:
 					typeof data.commentPlaceholder === 'string' ? data.commentPlaceholder : undefined,
 				widgetLanguage: typeof data.widgetLanguage === 'string' ? data.widgetLanguage : undefined,
+				emotionUrl: typeof data.emotionUrl === 'string' ? data.emotionUrl : undefined,
+				enableEmoji: typeof data.enableEmoji === 'boolean' ? data.enableEmoji : true,
 			};
 		} catch (e) {
 			return {};
@@ -151,9 +154,10 @@ export class CWDComments {
 			this.mountPoint = document.createElement('div');
 			this.mountPoint.className = 'cwd-comments-container';
 			this.shadowRoot.appendChild(this.mountPoint);
-			const theme = this.config.theme || 'light';
-			this.mountPoint.setAttribute('data-theme', theme);
-			this._applyCustomCss();
+const theme = this.config.theme || 'light';
+		this.mountPoint.setAttribute('data-theme', theme);
+		this._applyCustomCss();
+		this._applyPrimaryColor();
 		}
 
 		(async () => {
@@ -221,7 +225,11 @@ export class CWDComments {
 			this.config.requireReview = !!serverConfig.requireReview;
 			this.config.enableCommentLike = serverConfig.enableCommentLike;
 			this.config.enableArticleLike = serverConfig.enableArticleLike;
-			this.config.enableImageLightbox = serverConfig.enableImageLightbox;
+				this.config.enableImageLightbox = serverConfig.enableImageLightbox;
+				this.config.emotionUrl = serverConfig.emotionUrl || (this.config.apiBaseUrl ? this.config.apiBaseUrl.replace(/\/+$/, '') + '/emotion' : '');
+				this.config.enableEmoji = serverConfig.enableEmoji;
+				// 设置表情数据 API 地址
+				setApiBaseUrl(this.config.apiBaseUrl);
 
 			if (this.config.enableImageLightbox === true) {
 				if (this.mountPoint && !this.imagePreview) {
@@ -415,6 +423,8 @@ export class CWDComments {
 				adminEmail: this.config.adminEmail,
 				onVerifyAdmin: (key) => this.api.verifyAdminKey(key),
 				placeholder: this.config.commentPlaceholder,
+				emotionUrl: this.config.emotionUrl,
+				enableEmoji: this.config.enableEmoji,
 				t: this.t
 			});
 			this.commentForm.render();
@@ -459,6 +469,9 @@ export class CWDComments {
 				// adminEmail 已移除，前端展示改用 isAdmin 字段
 				adminBadge: this.config.adminBadge,
 				enableCommentLike: this.config.enableCommentLike !== false,
+				replyPlaceholder: this.config.commentPlaceholder,
+				emotionUrl: this.config.emotionUrl,
+				enableEmoji: this.config.enableEmoji,
 				onRetry: () => this.store.loadComments(),
 				onReply: (commentId) => this.store.startReply(commentId),
 				onSubmitReply: (commentId) => this.store.submitReply(commentId),
@@ -512,6 +525,8 @@ export class CWDComments {
 				formErrors: state.formErrors,
 				submitting: state.submitting,
 				adminEmail: this.config.adminEmail,
+				emotionUrl: this.config.emotionUrl,
+				enableEmoji: this.config.enableEmoji,
 			});
 		}
 
@@ -591,6 +606,8 @@ export class CWDComments {
 				replyError: state.replyError,
 				submitting: state.submitting,
 				currentUser: state.form,
+				emotionUrl: this.config.emotionUrl,
+				enableEmoji: this.config.enableEmoji,
 			});
 		}
 
@@ -647,6 +664,11 @@ export class CWDComments {
 		// 更新主题
 		if (newConfig.theme && this.mountPoint) {
 			this.mountPoint.setAttribute('data-theme', newConfig.theme);
+		}
+
+		// 更新主题色
+		if (newConfig.primaryColor !== undefined || prevConfig.primaryColor !== this.config.primaryColor) {
+			this._applyPrimaryColor();
 		}
 
 		const shouldReload =
@@ -710,6 +732,48 @@ export class CWDComments {
 		if (this.customStyleElement.parentNode !== this.shadowRoot) {
 			this.shadowRoot.appendChild(this.customStyleElement);
 		}
+	}
+
+	/**
+	 * 应用自定义主题色
+	 * 将 primaryColor 设置为 --cwd-primary CSS 变量
+	 * 同时自动计算 hover 色（变暗 10%）
+	 */
+	_applyPrimaryColor() {
+		if (!this.mountPoint) return;
+		const color = this.config.primaryColor;
+		if (!color || typeof color !== 'string' || color.trim() === '') return;
+		const trimmed = color.trim();
+		// 验证 hex 色值
+		if (!/^#[0-9a-fA-F]{3,8}$/.test(trimmed)) return;
+		this.mountPoint.style.setProperty('--cwd-primary', trimmed);
+		// 计算 hover 色（变暗 ~12%）
+		const hover = this._darkenHex(trimmed, 0.12);
+		if (hover) {
+			this.mountPoint.style.setProperty('--cwd-primary-hover', hover);
+		}
+	}
+
+	/**
+	 * 将 hex 颜色变暗
+	 * @param {string} hex - hex 颜色值
+	 * @param {number} amount - 变暗量 0~1
+	 * @returns {string|null} 变暗后的 hex 颜色
+	 */
+	_darkenHex(hex, amount) {
+		let h = hex.replace('#', '');
+		if (h.length === 3) {
+			h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+		}
+		if (h.length !== 6 && h.length !== 8) return null;
+		const r = parseInt(h.substring(0, 2), 16);
+		const g = parseInt(h.substring(2, 4), 16);
+		const b = parseInt(h.substring(4, 6), 16);
+		const factor = 1 - amount;
+		const dr = Math.round(r * factor);
+		const dg = Math.round(g * factor);
+		const db = Math.round(b * factor);
+		return '#' + [dr, dg, db].map((v) => v.toString(16).padStart(2, '0')).join('');
 	}
 
 	_initLikeButton(header) {
@@ -814,8 +878,12 @@ export class CWDComments {
 	 */
 	_handleImageClick(e) {
 		const target = e.target;
-		// 检查点击的是否是评论内容中的图片
+		// 检查点击的是否是评论内容中的图片，排除表情图片
 		if (target.tagName === 'IMG' && target.closest('.cwd-comment-content')) {
+			// 排除表情图片（有 cwd-emotion-img class 或 src 包含 /emotion/）
+			if (target.classList.contains('cwd-emotion-img') || (target.src && target.src.indexOf('/emotion/') !== -1)) {
+				return;
+			}
 			e.preventDefault();
 			e.stopPropagation();
 			if (this.imagePreview) {

@@ -11,13 +11,13 @@ Authorization: Bearer <token>
 ## 1.1 导出所有评论数据
 
 ```
-GET /admin/comments/export
+GET /api/admin/comments/export
 ```
 
 导出评论数据，返回格式为 JSON，字段与数据库结构一致。
 
 - 方法：`GET`
-- 路径：`/admin/comments/export`
+- 路径：`/api/admin/comments/export`
 - 鉴权：需要（Bearer Token）
 
 **查询参数**
@@ -72,13 +72,13 @@ GET /admin/comments/export
 ## 1.2 导入评论数据
 
 ```
-POST /admin/comments/import
+POST /api/admin/comments/import
 ```
 
 导入评论数据，支持 JSON 格式，可以是单个对象或数组。
 
 - 方法：`POST`
-- 路径：`/admin/comments/import`
+- 路径：`/api/admin/comments/import`
 - 鉴权：需要（Bearer Token）
 
 **请求体**
@@ -109,7 +109,7 @@ POST /admin/comments/import
 
 说明：
 
-- 若从 CWD 自身导出的评论数据进行恢复，可直接将 `/admin/comments/export` 接口导出的 JSON 原样提交到本接口；
+- 若从 CWD 自身导出的评论数据进行恢复，可直接将 `/api/admin/comments/export` 接口导出的 JSON 原样提交到本接口；
 - 若从 Twikoo / Artalk 等其他评论系统迁移数据，可通过管理后台「评论数据导入」功能
 - 上传对应的 JSON 文件，前端会自动转换为上述结构后调用本接口。
 - 数据导入采用 `INSERT OR REPLACE` 策略，若提供 `id` 字段且存在则会覆盖原有数据
@@ -151,11 +151,11 @@ POST /admin/comments/import
 ### 2.1 导出配置数据
 
 ```
-GET /admin/export/config
+GET /api/admin/export/config
 ```
 
 - 方法：`GET`
-- 路径：`/admin/export/config`
+- 路径：`/api/admin/export/config`
 - 鉴权：需要（Bearer Token）
 
 **成功响应**
@@ -185,13 +185,13 @@ GET /admin/export/config
 ### 2.2 导入配置数据
 
 ```
-POST /admin/import/config
+POST /api/admin/import/config
 ```
 
 导入配置数据，支持单个对象或对象数组。
 
 - 方法：`POST`
-- 路径：`/admin/import/config`
+- 路径：`/api/admin/import/config`
 - 鉴权：需要（Bearer Token）
 
 **请求体**
@@ -256,11 +256,11 @@ POST /admin/import/config
 ### 3.1 导出访问 / 点赞统计数据
 
 ```
-GET /admin/export/stats
+GET /api/admin/export/stats
 ```
 
 - 方法：`GET`
-- 路径：`/admin/export/stats`
+- 路径：`/api/admin/export/stats`
 - 鉴权：需要（Bearer Token）
 
 **查询参数**
@@ -329,13 +329,13 @@ GET /admin/export/stats
 ### 3.2 导入访问 / 点赞统计数据
 
 ```
-POST /admin/import/stats
+POST /api/admin/import/stats
 ```
 
 导入访问 / 点赞统计数据，请求体结构需与导出格式一致。
 
 - 方法：`POST`
-- 路径：`/admin/import/stats`
+- 路径：`/api/admin/import/stats`
 - 鉴权：需要（Bearer Token）
 
 **请求体**
@@ -390,11 +390,11 @@ POST /admin/import/stats
 ### 4.1 全量导出（备份）
 
 ```
-GET /admin/export/backup
+GET /api/admin/export/backup
 ```
 
 - 方法：`GET`
-- 路径：`/admin/export/backup`
+- 路径：`/api/admin/export/backup`
 - 鉴权：需要（Bearer Token）
 
 **成功响应**
@@ -415,9 +415,9 @@ GET /admin/export/backup
 
 说明：
 
-- `comments` 字段等同于 `/admin/comments/export` 导出的结果；
-- `settings` 字段等同于 `/admin/export/config` 导出的结果；
-- `page_stats` / `page_visit_daily` / `likes` 字段等同于 `/admin/export/stats` 导出的结果。
+- `comments` 字段等同于 `/api/admin/comments/export` 导出的结果；
+- `settings` 字段等同于 `/api/admin/export/config` 导出的结果；
+- `page_stats` / `page_visit_daily` / `likes` 字段等同于 `/api/admin/export/stats` 导出的结果。
 
 **错误响应**
 
@@ -433,13 +433,13 @@ GET /admin/export/backup
 ### 4.2 全量导入（恢复）
 
 ```
-POST /admin/import/backup
+POST /api/admin/import/backup
 ```
 
-使用 `/admin/export/backup` 导出的 JSON 文件进行一键恢复。
+使用 `/api/admin/export/backup` 导出的 JSON 文件进行一键恢复。
 
 - 方法：`POST`
-- 路径：`/admin/import/backup`
+- 路径：`/api/admin/import/backup`
 - 鉴权：需要（Bearer Token）
 
 **请求体**

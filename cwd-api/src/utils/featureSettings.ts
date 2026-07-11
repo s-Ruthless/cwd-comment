@@ -7,15 +7,19 @@ export const FEATURE_COMMENT_PLACEHOLDER_KEY = 'comment_feature_placeholder';
 export const FEATURE_VISIBLE_DOMAINS_KEY = 'admin_visible_domains';
 export const FEATURE_ADMIN_LANGUAGE_KEY = 'admin_language';
 export const FEATURE_WIDGET_LANGUAGE_KEY = 'widget_language';
+export const FEATURE_EMOTION_URL_KEY = 'comment_feature_emotion_url';
+export const FEATURE_EMOJI_KEY = 'comment_feature_emoji';
 
 export type FeatureSettings = {
 	enableCommentLike: boolean;
 	enableArticleLike: boolean;
 	enableImageLightbox: boolean;
+	enableEmoji: boolean;
 	commentPlaceholder?: string;
 	visibleDomains?: string[];
 	adminLanguage?: string;
 	widgetLanguage?: string;
+	emotionUrl?: string;
 };
 
 export async function loadFeatureSettings(env: Bindings): Promise<FeatureSettings> {
@@ -27,13 +31,15 @@ export async function loadFeatureSettings(env: Bindings): Promise<FeatureSetting
 		FEATURE_COMMENT_LIKE_KEY,
 		FEATURE_ARTICLE_LIKE_KEY,
 		FEATURE_IMAGE_LIGHTBOX_KEY,
+		FEATURE_EMOJI_KEY,
 		FEATURE_COMMENT_PLACEHOLDER_KEY,
 		FEATURE_VISIBLE_DOMAINS_KEY,
 		FEATURE_ADMIN_LANGUAGE_KEY,
-		FEATURE_WIDGET_LANGUAGE_KEY
+		FEATURE_WIDGET_LANGUAGE_KEY,
+		FEATURE_EMOTION_URL_KEY
 	];
 	const { results } = await env.CWD_DB.prepare(
-		'SELECT key, value FROM Settings WHERE key IN (?, ?, ?, ?, ?, ?, ?)'
+		'SELECT key, value FROM Settings WHERE key IN (?, ?, ?, ?, ?, ?, ?, ?, ?)'
 	)
 		.bind(...keys)
 		.all<{ key: string; value: string }>();
@@ -68,9 +74,13 @@ export async function loadFeatureSettings(env: Bindings): Promise<FeatureSetting
 	const enableImageLightboxRaw = map.get(FEATURE_IMAGE_LIGHTBOX_KEY);
 	const enableImageLightbox = enableImageLightboxRaw === '1';
 
+	const enableEmojiRaw = map.get(FEATURE_EMOJI_KEY);
+	const enableEmoji = enableEmojiRaw !== '0'; // Default to true if missing or '1'
+
 	const commentPlaceholder = map.get(FEATURE_COMMENT_PLACEHOLDER_KEY);
 	const adminLanguage = map.get(FEATURE_ADMIN_LANGUAGE_KEY);
 	const widgetLanguage = map.get(FEATURE_WIDGET_LANGUAGE_KEY);
+	const emotionUrl = map.get(FEATURE_EMOTION_URL_KEY);
 
 	let visibleDomains: string[] | undefined;
 	const visibleDomainsRaw = map.get(FEATURE_VISIBLE_DOMAINS_KEY);
@@ -86,10 +96,12 @@ export async function loadFeatureSettings(env: Bindings): Promise<FeatureSetting
 		enableCommentLike,
 		enableArticleLike,
 		enableImageLightbox,
+		enableEmoji,
 		commentPlaceholder,
 		visibleDomains,
 		adminLanguage,
-		widgetLanguage
+		widgetLanguage,
+		emotionUrl
 	};
 }
 
@@ -130,6 +142,15 @@ export async function saveFeatureSettings(
 					: undefined
 		},
 		{
+			key: FEATURE_EMOJI_KEY,
+			value:
+				typeof settings.enableEmoji === 'boolean'
+					? settings.enableEmoji
+						? '1'
+						: '0'
+					: undefined
+		},
+		{
 			key: FEATURE_COMMENT_PLACEHOLDER_KEY,
 			value: settings.commentPlaceholder
 		},
@@ -144,6 +165,10 @@ export async function saveFeatureSettings(
 		{
 			key: FEATURE_WIDGET_LANGUAGE_KEY,
 			value: settings.widgetLanguage
+		},
+		{
+			key: FEATURE_EMOTION_URL_KEY,
+			value: settings.emotionUrl
 		}
 	];
 

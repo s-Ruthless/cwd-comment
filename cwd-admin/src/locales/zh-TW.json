@@ -270,6 +270,10 @@
       "placeholderHint": "自定義評論輸入框的提示文字，支持換行。留空則使用默認值。",
       "widgetLanguage": "組件語言",
       "widgetLanguageHint": "設置前端評論組件顯示的語言。",
+"emoji": "開啟表情功能",
+"emojiHint": "開啟後，評論框和回覆框中會顯示表情按鈕，使用者可以插入表情圖片。",
+"emotionUrl": "表情圖片 CDN 位址（可選）",
+"emotionUrlHint": "預設自動使用當前 API 位址下的 /emotion 目錄，無需手動填寫。如需使用自訂 CDN，請填寫 CDN 位址（不含子目錄），例如：https://cdn.example.com/emotion",
       "save": "保存",
       "saving": "保存中..."
     },

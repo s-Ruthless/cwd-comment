@@ -29,6 +29,10 @@ export const updateFeatureSettings = async (c: Context<{ Bindings: Bindings }>) 
 			typeof body.enableImageLightbox === 'boolean'
 				? body.enableImageLightbox
 				: undefined;
+		const enableEmoji =
+			typeof body.enableEmoji === 'boolean'
+				? body.enableEmoji
+				: undefined;
 		const rawCommentPlaceholder =
 			typeof body.commentPlaceholder === 'string' ? body.commentPlaceholder : undefined;
 		const commentPlaceholder =
@@ -40,15 +44,19 @@ export const updateFeatureSettings = async (c: Context<{ Bindings: Bindings }>) 
 		
 		const adminLanguage = typeof body.adminLanguage === 'string' ? body.adminLanguage : undefined;
 		const widgetLanguage = typeof body.widgetLanguage === 'string' ? body.widgetLanguage : undefined;
+		const rawEmotionUrl = typeof body.emotionUrl === 'string' ? body.emotionUrl : undefined;
+		const emotionUrl = rawEmotionUrl !== undefined ? rawEmotionUrl.trim() : undefined;
 
 		await saveFeatureSettings(c.env, {
 			enableCommentLike,
 			enableArticleLike,
 			enableImageLightbox,
+			enableEmoji,
 			commentPlaceholder,
 			visibleDomains,
 			adminLanguage,
-			widgetLanguage
+			widgetLanguage,
+			emotionUrl
 		});
 
 		return c.json({ message: '保存成功！' });

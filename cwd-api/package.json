@@ -2,8 +2,8 @@
 	"name": "cwd-api",
 	"version": "0.1.11",
 	"scripts": {
-		"deploy": "node scripts/index.js && wrangler deploy",
-		"dev": "wrangler dev",
+	"deploy": "node scripts/index.js && wrangler deploy",
+	"dev": "node scripts/copy_emotion.js && wrangler dev",
 		"start": "wrangler dev",
 		"test": "vitest",
 		"cf-typegen": "wrangler types"

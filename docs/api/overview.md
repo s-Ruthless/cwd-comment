@@ -43,8 +43,8 @@
   - `/api/config/comments`
   - 默认无需认证，可直接访问。
 - 管理员接口（Admin API）
-  - 路径前缀：`/admin/*`
-  - 除 `/admin/login` 外，其余接口都需要携带管理员 Token。
+  - 路径前缀：`/api/admin/*`
+  - 除 `/api/admin/login` 外，其余接口都需要携带管理员 Token。
 
 管理员接口需要使用 Bearer Token 认证：
 

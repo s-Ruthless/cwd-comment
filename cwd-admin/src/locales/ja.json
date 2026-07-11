@@ -270,6 +270,10 @@
       "placeholderHint": "コメント入力欄のヒントテキスト。",
       "widgetLanguage": "ウィジェット言語",
       "widgetLanguageHint": "フロントエンドウィジェットの言語。",
+"emoji": "絵文字を有効にする",
+"emojiHint": "有効にすると、コメント欄と返信欄に絵文字ボタンが表示され、絵文字画像を挿入できます。",
+"emotionUrl": "絵文字画像CDN URL（オプション）",
+"emotionUrlHint": "デフォルトではAPIアドレスの /emotion ディレクトリが自動使用されます。CDNを使用する場合は、CDNベースURL（サブディレクトリなし）を入力してください。例: https://cdn.example.com/emotion",
       "save": "保存",
       "saving": "保存中..."
     },

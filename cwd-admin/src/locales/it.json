@@ -270,6 +270,10 @@
       "placeholderHint": "Placeholder personalizzato per input commenti.",
       "widgetLanguage": "Lingua Widget",
       "widgetLanguageHint": "Lingua per il widget frontend.",
+"emoji": "Abilita emoji",
+"emojiHint": "Mostra il pulsante emoji nei moduli di commento e risposta per inserire immagini emoji.",
+"emotionUrl": "URL CDN immagini emoji (opzionale)",
+"emotionUrlHint": "Per impostazione predefinita, viene utilizzata la directory /emotion sotto l'indirizzo API. Per usare un CDN, inserisci l'URL di base (senza sottodirectory), es: https://cdn.example.com/emotion",
       "save": "Salva",
       "saving": "Salvataggio..."
     },

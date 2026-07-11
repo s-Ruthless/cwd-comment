@@ -13,13 +13,13 @@ Token 通过登录接口获取，有效期为 48 小时。
 ## 1.1 管理员登录
 
 ```
-POST /admin/login
+POST /api/admin/login
 ```
 
 管理员登录，获取后续调用其他管理员接口所需的临时 Token。
 
 - 方法：`POST`
-- 路径：`/admin/login`
+- 路径：`/api/admin/login`
 - 鉴权：不需要
 
 **请求头**

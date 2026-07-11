@@ -13,9 +13,26 @@ import {
 } from '../../utils/email';
 import { loadTelegramSettings, sendTelegramMessage } from '../../utils/telegram';
 import { decodePostSlug } from '../../utils/decodePostSlug';
+import { loadFeatureSettings } from '../../utils/featureSettings';
 
 export function checkContent(content: string): string {
     return content.replace(/<script[\s\S]*?<\/script>/g, "");
+}
+
+/**
+ * Replace emotion syntax ::packageName:iconName:: with HTML img tag
+ * e.g. ::aru:despise:: -> <img src="https://example.com/emotion/aru/despise.png" alt="despise" title="despise" class="cwd-emotion-img">
+ */
+export function replaceEmotionSyntax(content: string, emotionUrl: string): string {
+    if (!content || !emotionUrl) return content;
+    const baseUrl = emotionUrl.replace(/\/+$/, '');
+    return content.replace(/::(\w+):(\w+)::/g, (match, pkg, icon) => {
+        // Only allow known emotion packages and alphanumeric icon names
+        if (!/^[a-zA-Z]+$/.test(pkg) || !/^[a-zA-Z0-9]+$/.test(icon)) {
+            return match;
+        }
+        return `<img src="${baseUrl}/${pkg}/${icon}.png" alt="${icon}" title="${icon}" class="cwd-emotion-img">`;
+    });
 }
 
 export const postComment = async (c: Context<{ Bindings: Bindings }>) => {
@@ -130,11 +147,28 @@ export const postComment = async (c: Context<{ Bindings: Bindings }>) => {
 
   // 3. 准备数据
   const cleanedContent = checkContent(rawContent);
-  const contentText = cleanedContent;
+  let contentText = cleanedContent;
   const name = checkContent(rawName);
 
+  // Load emotion url from feature settings, fallback to auto-detect from request origin
+  let emotionUrl = '';
+  try {
+    const featureSettings = await loadFeatureSettings(c.env);
+    if (featureSettings.emotionUrl) {
+      emotionUrl = featureSettings.emotionUrl;
+    } else {
+      const reqUrl = new URL(c.req.url);
+      emotionUrl = `${reqUrl.origin}/emotion`;
+    }
+  } catch (e) {
+    console.error('PostComment:loadEmotionUrlFailed', e);
+  }
+
+  // Replace emotion syntax with markdown image syntax
+  const contentWithEmotion = replaceEmotionSyntax(cleanedContent, emotionUrl);
+
   // Markdown 渲染与 XSS 过滤
-  const html = await marked.parse(cleanedContent, { async: true });
+  const html = await marked.parse(contentWithEmotion, { async: true });
   const contentHtml = xss(html, {
     whiteList: {
       ...xss.whiteList,
@@ -142,9 +176,12 @@ export const postComment = async (c: Context<{ Bindings: Bindings }>) => {
       span: ['class', 'style'],
       pre: ['class'],
       div: ['class', 'style'],
-      img: ['src', 'alt', 'title', 'width', 'height', 'style']
+      img: ['src', 'alt', 'title', 'width', 'height', 'style', 'class']
     }
   });
+
+  // For content_text, use the cleaned content without emotion syntax replacement
+  // (keep original text for plain text display)
 
   console.log('PostComment:request', {
     postSlug: post_slug,

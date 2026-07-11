@@ -270,6 +270,10 @@
       "placeholderHint": "댓글 입력창 안내 문구.",
       "widgetLanguage": "위젯 언어",
       "widgetLanguageHint": "프론트엔드 위젯 언어.",
+"emoji": "이모지 활성화",
+"emojiHint": "활성화하면 댓글 및 답글 입력란에 이모지 버튼이 표시되어 이모지 이미지를 삽입할 수 있습니다.",
+"emotionUrl": "이모지 이미지 CDN URL (선택사항)",
+"emotionUrlHint": "기본적으로 API 주소의 /emotion 디렉토리가 자동으로 사용됩니다. CDN을 사용하려면 CDN 기본 URL(하위 디렉토리 제외)을 입력하세요. 예: https://cdn.example.com/emotion",
       "save": "저장",
       "saving": "저장 중..."
     },
