@@ -481,14 +481,15 @@ export class CommentForm extends Component {
 				this.modal.destroy();
 				this.modal = null;
 			},
-			onSubmit: async (key) => {
-				if (this.props.onVerifyAdmin) {
-					await this.props.onVerifyAdmin(key);
-					auth.saveToken(key);
-					this.modal.destroy();
-					this.modal = null;
-				}
-			},
+		onSubmit: async (key) => {
+			if (this.props.onVerifyAdmin) {
+				await this.props.onVerifyAdmin(key);
+				auth.saveToken(key);
+				this.modal.destroy();
+				this.modal = null;
+				this.render();
+			}
+		},
 			t: this.t
 		});
 		this.modal.render();
