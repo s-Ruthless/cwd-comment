@@ -31,7 +31,7 @@ export function replaceEmotionSyntax(content: string, emotionUrl: string): strin
         if (!/^[a-zA-Z]+$/.test(pkg) || !/^[a-zA-Z0-9]+$/.test(icon)) {
             return match;
         }
-        return `<img src="${baseUrl}/${pkg}/${icon}.png" alt="${icon}" title="${icon}" class="cwd-emotion-img">`;
+        return `<img src="${baseUrl}/${pkg}/${icon}.png" alt="${icon}" title="${icon}" class="cwd-emotion-img" referrerpolicy="no-referrer" loading="eager">`;
     });
 }
 
@@ -176,7 +176,7 @@ export const postComment = async (c: Context<{ Bindings: Bindings }>) => {
       span: ['class', 'style'],
       pre: ['class'],
       div: ['class', 'style'],
-      img: ['src', 'alt', 'title', 'width', 'height', 'style', 'class']
+      img: ['src', 'alt', 'title', 'width', 'height', 'style', 'class', 'referrerpolicy', 'loading']
     }
   });
 

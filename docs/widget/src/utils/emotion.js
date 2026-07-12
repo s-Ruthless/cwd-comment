@@ -53,6 +53,25 @@ export function getEmotionImageUrl(packageName, iconName, emotionUrl) {
 }
 
 /**
+ * 替换 HTML 中表情图片的 URL 为当前 emotionUrl
+ * 用于修复旧评论中固化的表情 URL（可能是非 CDN 地址）
+ * @param {string} html - 包含表情图片的 HTML
+ * @param {string} emotionUrl - 当前表情图片基础 URL
+ * @returns {string} 替换后的 HTML
+ */
+export function replaceEmotionUrlsInHtml(html, emotionUrl) {
+	if (!html || !emotionUrl) return html;
+	const newBaseUrl = emotionUrl.replace(/\/+$/, '');
+	// 匹配 src=".../emotion/pkg/icon.png" 格式（含 http/https）
+	return html.replace(
+		/src=["'](https?:\/\/[^"']*?\/emotion\/(\w+)\/(\w+)\.\w+)["']/gi,
+		(match, oldUrl, pkg, icon) => {
+			return `src="${newBaseUrl}/${pkg}/${icon}.png"`;
+		}
+	);
+}
+
+/**
  * 替换文本中的表情语法 ::packageName:iconName:: 为 HTML img 标签
  * @param {string} text 包含表情语法的文本
  * @param {string} emotionUrl 表情图片基础 URL
@@ -65,6 +84,6 @@ export function replaceEmotionSyntax(text, emotionUrl) {
 		if (!/^[a-zA-Z]+$/.test(pkg) || !/^[a-zA-Z0-9]+$/.test(icon)) {
 			return match;
 		}
-		return `<img src="${baseUrl}/${pkg}/${icon}.png" alt="${icon}" title="${icon}" class="cwd-emotion-img">`;
+		return `<img src="${baseUrl}/${pkg}/${icon}.png" alt="${icon}" title="${icon}" class="cwd-emotion-img" referrerpolicy="no-referrer" loading="eager">`;
 	});
 }

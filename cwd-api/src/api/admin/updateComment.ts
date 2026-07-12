@@ -138,7 +138,7 @@ export const updateComment = async (c: Context<{ Bindings: Bindings }>) => {
       span: ['class', 'style'],
       pre: ['class'],
       div: ['class', 'style'],
-      img: ['src', 'alt', 'title', 'width', 'height', 'style', 'class']
+      img: ['src', 'alt', 'title', 'width', 'height', 'style', 'class', 'referrerpolicy', 'loading']
     }
   });
 

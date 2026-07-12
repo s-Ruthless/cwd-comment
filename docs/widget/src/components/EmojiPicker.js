@@ -62,13 +62,14 @@ export class EmojiPicker extends Component {
 						onClick: function () { self.handleSelect(packageName, item.icon, 'image'); },
 					},
 					children: [
-						self.createElement('img', {
-							attributes: {
-								src: imgUrl,
-								alt: item.text || item.icon,
-								loading: 'lazy',
-							},
-						}),
+self.createElement('img', {
+attributes: {
+src: imgUrl,
+alt: item.text || item.icon,
+loading: 'eager',
+referrerpolicy: 'no-referrer',
+},
+}),
 					],
 				});
 			}

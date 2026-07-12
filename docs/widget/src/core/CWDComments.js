@@ -8,7 +8,7 @@ import { createCommentStore } from './store.js';
 import { CommentForm } from '@/components/CommentForm.js';
 import { CommentList } from '@/components/CommentList.js';
 import { ImagePreview } from '@/components/ImagePreview.js';
-import { setApiBaseUrl } from '@/utils/emotion.js';
+import { setApiBaseUrl, fetchEmotionData } from '@/utils/emotion.js';
 import styles from '@/styles/main.css?inline';
 import { locales } from '@/locales/index.js';
 
@@ -228,8 +228,12 @@ const theme = this.config.theme || 'light';
 				this.config.enableImageLightbox = serverConfig.enableImageLightbox;
 				this.config.emotionUrl = serverConfig.emotionUrl || (this.config.apiBaseUrl ? this.config.apiBaseUrl.replace(/\/+$/, '') + '/emotion' : '');
 				this.config.enableEmoji = serverConfig.enableEmoji;
-				// 设置表情数据 API 地址
-				setApiBaseUrl(this.config.apiBaseUrl);
+			// 设置表情数据 API 地址
+			setApiBaseUrl(this.config.apiBaseUrl);
+			// 预加载表情数据（不阻塞评论渲染）
+			if (this.config.enableEmoji !== false) {
+				fetchEmotionData().catch(() => {});
+			}
 
 			if (this.config.enableImageLightbox === true) {
 				if (this.mountPoint && !this.imagePreview) {
